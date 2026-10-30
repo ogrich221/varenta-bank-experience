@@ -95,10 +95,10 @@ function Index() {
           <div className="glass mt-12 grid gap-4 rounded-[2rem] p-4 sm:p-6 lg:grid-cols-3">
             <div className="rounded-3xl bg-gradient-primary p-6 text-primary-foreground shadow-glow lg:col-span-2">
               <p className="text-sm opacity-85">Total balance</p>
-              <p className="mt-2 font-display text-4xl font-bold sm:text-5xl">$24,860.50</p>
+              <p className="mt-2 font-display text-4xl font-bold sm:text-5xl">$0.00</p>
               <div className="mt-8 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-background/20 p-4 backdrop-blur"><p className="flex items-center gap-1 text-xs"><ArrowDownLeft className="h-3 w-3" />Income</p><p className="mt-1 font-display text-xl font-semibold">$6,420</p></div>
-                <div className="rounded-2xl bg-background/20 p-4 backdrop-blur"><p className="flex items-center gap-1 text-xs"><ArrowUpRight className="h-3 w-3" />Expenses</p><p className="mt-1 font-display text-xl font-semibold">$2,185</p></div>
+                <div className="rounded-2xl bg-background/20 p-4 backdrop-blur"><p className="flex items-center gap-1 text-xs"><ArrowDownLeft className="h-3 w-3" />Income</p><p className="mt-1 font-display text-xl font-semibold">$0.00</p></div>
+                <div className="rounded-2xl bg-background/20 p-4 backdrop-blur"><p className="flex items-center gap-1 text-xs"><ArrowUpRight className="h-3 w-3" />Expenses</p><p className="mt-1 font-display text-xl font-semibold">$0.00</p></div>
               </div>
             </div>
             <div className="glass rounded-3xl p-6">
