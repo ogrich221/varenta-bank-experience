@@ -12,7 +12,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { AdminShell, Money, StatCard, StatusPill } from "@/components/admin/Shell";
+import { AdminShell, Money, shortWhen, StatCard, StatusPill } from "@/components/admin/Shell";
 import { getOverview } from "@/lib/admin.functions";
 
 const overviewQuery = queryOptions({
@@ -164,7 +164,7 @@ function OverviewPage() {
           </Link>
         </div>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[56rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
+          <table className="w-full min-w-[40rem] text-left text-sm [&_th]:pr-4 [&_td]:pr-4 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
             <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="pb-2 font-semibold">Customer</th>
@@ -188,7 +188,7 @@ function OverviewPage() {
                     <StatusPill status={t.status} />
                   </td>
                   <td className="py-2.5 text-xs text-muted-foreground">
-                    {new Date(t.created_at).toLocaleString()}
+                    {shortWhen(t.created_at)}
                   </td>
                 </tr>
               ))}

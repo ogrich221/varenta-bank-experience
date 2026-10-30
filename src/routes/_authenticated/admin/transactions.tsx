@@ -3,7 +3,7 @@ import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { Check, Search, X } from "lucide-react";
-import { AdminShell, EmptyState, Money, StatCard, StatusPill } from "@/components/admin/Shell";
+import { AdminShell, EmptyState, Money, shortWhen, StatCard, StatusPill } from "@/components/admin/Shell";
 import {
   getTransactions,
   setTransactionStatus,
@@ -137,7 +137,7 @@ function TransactionsPage() {
           {rows.length === 0 ? (
             <EmptyState>No movements match this filter.</EmptyState>
           ) : (
-            <table className="w-full min-w-[76rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
+            <table className="w-full min-w-[40rem] text-left text-sm [&_th]:pr-4 [&_td]:pr-4 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
               <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="pb-2 font-semibold">Customer</th>
@@ -167,7 +167,7 @@ function TransactionsPage() {
                       <StatusPill status={t.status} />
                     </td>
                     <td className="py-3 text-xs text-muted-foreground">
-                      {new Date(t.created_at).toLocaleString()}
+                      {shortWhen(t.created_at)}
                     </td>
                     <td className="py-3">
                       <div className="flex justify-end gap-1.5">

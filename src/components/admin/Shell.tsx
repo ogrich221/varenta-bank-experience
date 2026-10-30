@@ -284,4 +284,16 @@ export function EmptyState({ children }: { children: ReactNode }) {
   );
 }
 
+// Compact timestamp so console tables keep their columns on a laptop screen.
+export function shortWhen(value: string | null | undefined) {
+  if (!value) return "—";
+  return new Date(value).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 export { CreditCard };

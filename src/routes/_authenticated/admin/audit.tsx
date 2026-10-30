@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Activity, Search } from "lucide-react";
-import { AdminShell, EmptyState, StatCard } from "@/components/admin/Shell";
+import { AdminShell, EmptyState, shortWhen, StatCard } from "@/components/admin/Shell";
 import { getAuditLog } from "@/lib/admin.functions";
 
 const auditQuery = queryOptions({
@@ -78,7 +78,7 @@ function AuditPage() {
                 : "No entries match this search."}
             </EmptyState>
           ) : (
-            <table className="w-full min-w-[60rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
+            <table className="w-full min-w-[40rem] text-left text-sm [&_th]:pr-4 [&_td]:pr-4 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
               <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="pb-2 font-semibold">When</th>
@@ -91,7 +91,7 @@ function AuditPage() {
                 {rows.map((r) => (
                   <tr key={r.id} className="transition-colors hover:bg-accent/40">
                     <td className="py-3 text-xs text-muted-foreground">
-                      {new Date(r.created_at).toLocaleString()}
+                      {shortWhen(r.created_at)}
                     </td>
                     <td className="py-3 font-medium">{r.actor_email ?? "—"}</td>
                     <td className="py-3">
