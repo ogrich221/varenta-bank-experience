@@ -52,6 +52,11 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-primary-glow: var(--primary-glow);
+  --font-display: "Sora", sans-serif;
+  --font-sans: "Manrope", sans-serif;
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -62,26 +67,33 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --radius: 1.25rem;
+  --background: oklch(0.985 0.012 75);
+  --foreground: oklch(0.2 0.02 50);
+  --card: oklch(1 0 0 / 55%);
+  --card-foreground: oklch(0.2 0.02 50);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.2 0.02 50);
+  --primary: oklch(0.68 0.19 45);
+  --primary-glow: oklch(0.8 0.16 65);
+  --primary-foreground: oklch(0.99 0.005 75);
+  --secondary: oklch(0.95 0.03 70);
+  --secondary-foreground: oklch(0.25 0.03 50);
+  --muted: oklch(0.95 0.02 70);
+  --muted-foreground: oklch(0.45 0.03 50);
+  --accent: oklch(0.93 0.06 60);
+  --accent-foreground: oklch(0.3 0.08 45);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.9 0.03 70);
+  --input: oklch(0.9 0.03 70);
+  --ring: oklch(0.68 0.19 45);
+  --cream: oklch(0.97 0.025 80);
+  --ink: oklch(0.18 0.02 50);
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
+  --gradient-hero: linear-gradient(90deg, oklch(0.985 0.012 75 / 92%) 0%, oklch(0.985 0.012 75 / 70%) 40%, oklch(0.985 0.012 75 / 0%) 75%);
+  --shadow-glass: 0 20px 50px -20px oklch(0.4 0.1 45 / 30%);
+  --shadow-glow: 0 10px 30px -8px color-mix(in oklab, var(--primary) 55%, transparent);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -141,4 +153,35 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+}
+
+@layer base {
+  body { font-family: var(--font-sans); }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+}
+@utility glass {
+  background: color-mix(in oklab, white 50%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in oklab, white 70%, transparent);
+  box-shadow: var(--shadow-glass);
+}
+@utility glass-dark {
+  background: color-mix(in oklab, var(--ink) 70%, transparent);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid color-mix(in oklab, white 12%, transparent);
+  color: var(--cream);
+}
+@utility bg-gradient-primary { background-image: var(--gradient-primary); }
+@utility bg-gradient-hero { background-image: var(--gradient-hero); }
+@utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility text-gradient {
+  background-image: var(--gradient-primary);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+@keyframes rise { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: none } }
+@utility animate-float { animation: float 6s ease-in-out infinite; }
+@utility animate-rise { animation: rise 0.8s cubic-bezier(.2,.7,.2,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
