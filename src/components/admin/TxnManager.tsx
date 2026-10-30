@@ -47,6 +47,7 @@ export function TxnManager({ type }: { type?: "deposit" | "withdrawal" | "transf
       };
     } catch {
       // ignore
+      return undefined;
     }
   }, [qc]);
 

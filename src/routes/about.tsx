@@ -8,6 +8,7 @@ import teller from "@/assets/branch-teller.jpg";
 import lobby from "@/assets/branch-lobby.jpg";
 
 export const Route = createFileRoute("/about")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "About Varenta Bank — Trust, Solvency & Global Innovation" },

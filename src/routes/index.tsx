@@ -11,6 +11,7 @@ import { GlassNavShowcase } from "@/components/site/GlassNavShowcase";
 import { GlobalPresenceGlobe } from "@/components/site/GlobalPresenceGlobe";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Varenta Bank — Modern Digital Banking" },

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SimplePage } from "@/components/site/Layout";
 
 export const Route = createFileRoute("/contact")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Contact Us — Varenta Bank" },

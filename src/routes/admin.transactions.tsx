@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/admin/transactions")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [{ title: "Transactions & Approvals — Varenta Admin" }],
   }),
@@ -179,12 +180,12 @@ function TransactionsApprovalPage() {
                       <td className="py-3.5 px-4 font-bold font-display text-white text-sm">
                         <span
                           className={
-                            t.type === "Deposit" || t.type === "Incoming"
+                            t.type === "Deposit" || t.type === "Admin Credit"
                               ? "text-emerald-400"
                               : "text-white"
                           }
                         >
-                          {t.type === "Deposit" || t.type === "Incoming" ? "+" : "-"}
+                          {t.type === "Deposit" || t.type === "Admin Credit" ? "+" : "-"}
                           {formatCurrency(t.amount, t.currency)}
                         </span>
                       </td>

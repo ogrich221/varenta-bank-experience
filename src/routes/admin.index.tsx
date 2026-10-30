@@ -11,6 +11,7 @@ import { ManagedUser, UserProfile } from "@/lib/banking-store";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [{ title: "Central Treasury Command — Varenta Admin" }],
   }),

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link, Outlet, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   LayoutDashboard, Users, Wallet, ArrowLeftRight, ArrowDownLeft, ArrowUpRight, Send, Landmark,
@@ -12,6 +12,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin")({
+  staticData: { sitemap: "exclude-subtree" },
   ssr: false,
   head: () => ({
     meta: [
@@ -20,21 +21,11 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   beforeLoad: async () => {
-    try {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        return { user: data.user };
-      }
-    } catch {
-      // Graceful fallback for demo / standalone testing
-    }
-    return {
-      user: {
-        id: "admin-ceo",
-        email: "treasury@varentabank.com",
-        user_metadata: { full_name: "Chief Executive Officer" },
-      },
-    };
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user) throw redirect({ to: "/admin/login" });
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
+    if (!isAdmin) throw redirect({ to: "/admin/login", search: { denied: "1" } });
+    return { user: data.user };
   },
   component: AdminLayout,
 });

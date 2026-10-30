@@ -4,7 +4,7 @@ import { adminHead, money, useRows } from "@/lib/admin";
 import { Loading, PageHeader, Panel, SearchBox, Select, Status, Table } from "@/components/admin/ui";
 import { useBanking } from "@/lib/banking-context";
 
-export const Route = createFileRoute("/admin/accounts")({ head: adminHead("Accounts"), component: Accounts });
+export const Route = createFileRoute("/admin/accounts")({ staticData: { sitemap: false }, head: adminHead("Accounts"), component: Accounts });
 
 type A = { id: string; account_number: string; account_type: string; balance: number; status: string; customers: { full_name: string } | null };
 

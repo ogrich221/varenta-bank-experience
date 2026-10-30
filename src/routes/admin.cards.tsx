@@ -4,7 +4,7 @@ import { adminHead, money, useRows } from "@/lib/admin";
 import { Loading, PageHeader, Select, Status } from "@/components/admin/ui";
 import { useBanking } from "@/lib/banking-context";
 
-export const Route = createFileRoute("/admin/cards")({ head: adminHead("Cards"), component: Cards });
+export const Route = createFileRoute("/admin/cards")({ staticData: { sitemap: false }, head: adminHead("Cards"), component: Cards });
 
 type C = { id: string; last4: string; brand: string; card_type: string; status: string; spend_limit: number; customers: { full_name: string } | null };
 

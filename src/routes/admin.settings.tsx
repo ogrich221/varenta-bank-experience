@@ -5,8 +5,9 @@ import { KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminHead, audit, date, useRows } from "@/lib/admin";
 import { abtn, Confirm, Loading, PageHeader, Panel, Table } from "@/components/admin/ui";
+import { PasswordField } from "@/components/site/PasswordField";
 
-export const Route = createFileRoute("/admin/settings")({ head: adminHead("Settings"), component: SettingsPage });
+export const Route = createFileRoute("/admin/settings")({ staticData: { sitemap: false }, head: adminHead("Settings"), component: SettingsPage });
 
 const input = "mt-1 h-10 w-full rounded-xl border border-input bg-background/40 px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
@@ -38,14 +39,14 @@ function SettingsPage() {
           <h2 className="flex items-center gap-2 font-semibold"><UserRound className="h-4 w-4 text-primary" />Profile</h2>
           <div className="mt-4 flex items-center gap-3">
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-primary font-bold text-primary-foreground shadow-glow">CEO</span>
-            <div><p className="font-semibold">CEO</p><p className="text-sm text-muted-foreground">{user.email}</p><p className="text-xs text-muted-foreground">Last sign-in {user.last_sign_in_at ? date(user.last_sign_in_at) : "—"}</p></div>
+            <div><p className="font-semibold">CEO</p><p className="text-sm text-muted-foreground">{user.email}</p><p className="text-xs text-muted-foreground">Last sign-in {"last_sign_in_at" in user && user.last_sign_in_at ? date(user.last_sign_in_at) : "—"}</p></div>
           </div>
         </Panel>
         <Panel>
           <h2 className="flex items-center gap-2 font-semibold"><KeyRound className="h-4 w-4 text-primary" />Change password</h2>
           <form onSubmit={changePw} className="mt-4 space-y-3">
-            <label className="block text-sm">Current password<input type="password" required autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} className={input} /></label>
-            <label className="block text-sm">New password<input type="password" required minLength={8} autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} /></label>
+            <label className="block text-sm">Current password<PasswordField required autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} className={input} revealWord="current password" /></label>
+            <label className="block text-sm">New password<PasswordField required minLength={8} autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} revealWord="new password" /></label>
             <button className={abtn("primary")}>Update password</button>
           </form>
         </Panel>
