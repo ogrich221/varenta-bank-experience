@@ -56,11 +56,11 @@ export function GlassNavShowcase() {
 
   // Touch swipe support for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.targetTouches[0].clientX;
+    touchStartX.current = e.targetTouches[0]!.clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
+    touchEndX.current = e.targetTouches[0]!.clientX;
   };
 
   const handleTouchEnd = () => {
