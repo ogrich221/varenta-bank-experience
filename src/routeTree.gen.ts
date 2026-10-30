@@ -19,6 +19,8 @@ import { Route as OpenAccountRouteImport } from './routes/open-account'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
+import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin/transactions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -69,6 +71,18 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminCustomersRoute =
+  AuthenticatedAdminCustomersRouteImport.update({
+    id: '/admin/customers',
+    path: '/admin/customers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminTransactionsRoute =
+  AuthenticatedAdminTransactionsRouteImport.update({
+    id: '/admin/transactions',
+    path: '/admin/transactions',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,6 +93,8 @@ export interface FileRoutesByFullPath {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -90,6 +106,8 @@ export interface FileRoutesByTo {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
@@ -103,6 +121,8 @@ export interface FileRoutesById {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -116,6 +136,8 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/admin/customers'
+    | '/admin/transactions'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,6 +149,8 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/admin/customers'
+    | '/admin/transactions'
     | '/admin'
   id:
     | '__root__'
@@ -139,6 +163,8 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/transactions'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -226,14 +252,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/customers': {
+      id: '/_authenticated/admin/customers'
+      path: '/admin/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/transactions': {
+      id: '/_authenticated/admin/transactions'
+      path: '/admin/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AuthenticatedAdminTransactionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+  AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
