@@ -42,6 +42,10 @@ export function SiteHeader() {
           ))}
         </ul>
         <div className="hidden items-center gap-2 lg:flex">
+          <Link to="/dashboard" className="rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 flex items-center gap-1.5 transition-all">
+            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            <span>Banking Portal</span>
+          </Link>
           <Link to="/login" className="px-4 py-2 text-sm font-semibold hover:text-primary">Login</Link>
           <Link to="/open-account" className={btnPrimary}>Open an Account</Link>
         </div>
@@ -56,7 +60,7 @@ export function SiteHeader() {
             <LanguageSelector />
           </div>
           <ul className="flex flex-col">
-            {[...nav, { to: "/login", label: "Login" } as const].map((n) => (
+            {[...nav, { to: "/dashboard", label: "Client Banking Portal" }, { to: "/login", label: "Login" } as const].map((n) => (
               <li key={n.to}><Link to={n.to} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3 font-medium hover:bg-accent">{n.label}</Link></li>
             ))}
           </ul>
