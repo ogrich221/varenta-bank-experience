@@ -8,6 +8,7 @@ import teller from "@/assets/branch-teller.jpg";
 import lobby from "@/assets/branch-lobby.jpg";
 import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
 import { GlassNavShowcase } from "@/components/site/GlassNavShowcase";
+import { GlobalPresenceGlobe } from "@/components/site/GlobalPresenceGlobe";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -81,6 +82,17 @@ function Index() {
 
       {/* Interactive Experience: 360° Debit Card & 21-Country Blinking Globe with Glass Navigation */}
       <GlassNavShowcase />
+
+      {/* Global branches globe */}
+      <section className="px-6 py-24" aria-labelledby="globe-title">
+        <div className="mx-auto max-w-5xl text-center">
+          <h2 id="globe-title" className="text-3xl font-bold sm:text-4xl">Our <span className="text-gradient">21 branches</span> worldwide</h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">Every blinking light is a Varenta branch, ready to serve you.</p>
+          <div className="glass mt-12 rounded-[2rem] p-4 sm:p-8">
+            <GlobalPresenceGlobe />
+          </div>
+        </div>
+      </section>
 
       {/* Dashboard preview */}
       <section className="relative px-6 py-24" aria-labelledby="dash-title">
