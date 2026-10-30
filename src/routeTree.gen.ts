@@ -17,7 +17,15 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as OpenAccountRouteImport } from './routes/open-account'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminCardsRouteImport } from './routes/admin.cards'
+import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 import { Route as AdminDepositsRouteImport } from './routes/admin.deposits'
+import { Route as AdminLoansRouteImport } from './routes/admin.loans'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminTransactionsRouteImport } from './routes/admin.transactions'
 import { Route as AdminTransfersRouteImport } from './routes/admin.transfers'
 import { Route as AdminWithdrawalsRouteImport } from './routes/admin.withdrawals'
@@ -63,9 +71,49 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAccountsRoute = AdminAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCardsRoute = AdminCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCustomersRoute = AdminCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDepositsRoute = AdminDepositsRouteImport.update({
   id: '/deposits',
   path: '/deposits',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoansRoute = AdminLoansRouteImport.update({
+  id: '/loans',
+  path: '/loans',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminTransactionsRoute = AdminTransactionsRouteImport.update({
@@ -97,7 +145,15 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/cards': typeof AdminCardsRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/deposits': typeof AdminDepositsRoute
+  '/admin/loans': typeof AdminLoansRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/transfers': typeof AdminTransfersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -111,7 +167,15 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/cards': typeof AdminCardsRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/deposits': typeof AdminDepositsRoute
+  '/admin/loans': typeof AdminLoansRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/transfers': typeof AdminTransfersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -127,7 +191,15 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/admin/accounts': typeof AdminAccountsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/cards': typeof AdminCardsRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/deposits': typeof AdminDepositsRoute
+  '/admin/loans': typeof AdminLoansRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/transactions': typeof AdminTransactionsRoute
   '/admin/transfers': typeof AdminTransfersRoute
   '/admin/withdrawals': typeof AdminWithdrawalsRoute
@@ -144,7 +216,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/admin/accounts'
+    | '/admin/analytics'
+    | '/admin/cards'
+    | '/admin/customers'
     | '/admin/deposits'
+    | '/admin/loans'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
     | '/admin/transactions'
     | '/admin/transfers'
     | '/admin/withdrawals'
@@ -158,7 +238,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/admin/accounts'
+    | '/admin/analytics'
+    | '/admin/cards'
+    | '/admin/customers'
     | '/admin/deposits'
+    | '/admin/loans'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
     | '/admin/transactions'
     | '/admin/transfers'
     | '/admin/withdrawals'
@@ -173,7 +261,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/admin/accounts'
+    | '/admin/analytics'
+    | '/admin/cards'
+    | '/admin/customers'
     | '/admin/deposits'
+    | '/admin/loans'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
     | '/admin/transactions'
     | '/admin/transfers'
     | '/admin/withdrawals'
@@ -250,11 +346,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/accounts': {
+      id: '/admin/accounts'
+      path: '/accounts'
+      fullPath: '/admin/accounts'
+      preLoaderRoute: typeof AdminAccountsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cards': {
+      id: '/admin/cards'
+      path: '/cards'
+      fullPath: '/admin/cards'
+      preLoaderRoute: typeof AdminCardsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/customers': {
+      id: '/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AdminCustomersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/deposits': {
       id: '/admin/deposits'
       path: '/deposits'
       fullPath: '/admin/deposits'
       preLoaderRoute: typeof AdminDepositsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/loans': {
+      id: '/admin/loans'
+      path: '/loans'
+      fullPath: '/admin/loans'
+      preLoaderRoute: typeof AdminLoansRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/transactions': {
@@ -289,7 +441,15 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAccountsRoute: typeof AdminAccountsRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCardsRoute: typeof AdminCardsRoute
+  AdminCustomersRoute: typeof AdminCustomersRoute
   AdminDepositsRoute: typeof AdminDepositsRoute
+  AdminLoansRoute: typeof AdminLoansRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSupportRoute: typeof AdminSupportRoute
   AdminTransactionsRoute: typeof AdminTransactionsRoute
   AdminTransfersRoute: typeof AdminTransfersRoute
   AdminWithdrawalsRoute: typeof AdminWithdrawalsRoute
@@ -297,7 +457,15 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAccountsRoute: AdminAccountsRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCardsRoute: AdminCardsRoute,
+  AdminCustomersRoute: AdminCustomersRoute,
   AdminDepositsRoute: AdminDepositsRoute,
+  AdminLoansRoute: AdminLoansRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSupportRoute: AdminSupportRoute,
   AdminTransactionsRoute: AdminTransactionsRoute,
   AdminTransfersRoute: AdminTransfersRoute,
   AdminWithdrawalsRoute: AdminWithdrawalsRoute,
