@@ -5,6 +5,7 @@ import { KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminHead, audit, date, useRows } from "@/lib/admin";
 import { abtn, Confirm, Loading, PageHeader, Panel, Table } from "@/components/admin/ui";
+import { PasswordField } from "@/components/site/PasswordField";
 
 export const Route = createFileRoute("/admin/settings")({ staticData: { sitemap: false }, head: adminHead("Settings"), component: SettingsPage });
 
@@ -44,8 +45,8 @@ function SettingsPage() {
         <Panel>
           <h2 className="flex items-center gap-2 font-semibold"><KeyRound className="h-4 w-4 text-primary" />Change password</h2>
           <form onSubmit={changePw} className="mt-4 space-y-3">
-            <label className="block text-sm">Current password<input type="password" required autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} className={input} /></label>
-            <label className="block text-sm">New password<input type="password" required minLength={8} autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} /></label>
+            <label className="block text-sm">Current password<PasswordField required autoComplete="current-password" value={cur} onChange={(e) => setCur(e.target.value)} className={input} revealWord="current password" /></label>
+            <label className="block text-sm">New password<PasswordField required minLength={8} autoComplete="new-password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} revealWord="new password" /></label>
             <button className={abtn("primary")}>Update password</button>
           </form>
         </Panel>
