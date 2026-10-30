@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { Menu, X, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Menu, X, Facebook, Instagram, Linkedin, Twitter, ShieldCheck } from "lucide-react";
 import { LanguageSelector } from "./LanguageSelector";
 
 const nav = [
@@ -46,9 +46,18 @@ export function SiteHeader() {
             <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
             <span>Banking Portal</span>
           </Link>
+          <Link
+            to="/admin/login"
+            className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-primary"
+            title="Administrator sign in"
+          >
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Admin
+          </Link>
           <Link to="/login" className="px-4 py-2 text-sm font-semibold hover:text-primary">Login</Link>
           <Link to="/open-account" className={btnPrimary}>Open an Account</Link>
         </div>
+
         <button className="grid h-11 w-11 place-items-center rounded-full lg:hidden" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
         </button>
@@ -60,9 +69,10 @@ export function SiteHeader() {
             <LanguageSelector />
           </div>
           <ul className="flex flex-col">
-            {[...nav, { to: "/dashboard", label: "Client Banking Portal" }, { to: "/login", label: "Login" } as const].map((n) => (
+            {[...nav, { to: "/dashboard", label: "Client Banking Portal" }, { to: "/login", label: "Login" }, { to: "/admin/login", label: "Administrator Sign In" } as const].map((n) => (
               <li key={n.to}><Link to={n.to} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3 font-medium hover:bg-accent">{n.label}</Link></li>
             ))}
+
           </ul>
           <Link to="/open-account" onClick={() => setOpen(false)} className={`${btnPrimary} mt-2 w-full`}>Open an Account</Link>
         </div>
@@ -75,7 +85,9 @@ export function SiteFooter() {
   const cols = [
     { h: "Bank", l: [["/about", "About us"], ["/services", "Services"], ["/contact", "Contact"]] },
     { h: "Account", l: [["/login", "Login"], ["/open-account", "Open an Account"]] },
+    { h: "Staff", l: [["/admin/login", "Administrator Sign In"]] },
   ] as const;
+
   return (
     <footer className="bg-ink text-cream">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4">

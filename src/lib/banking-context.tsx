@@ -233,6 +233,8 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     pin: string;
   }): Promise<{ success: boolean; txn?: Transaction; error?: string }> => {
     const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
+    if (!currentAcc) return { success: false, error: "No account is available to debit." };
+
 
     if (currentAcc.balance < params.amount) {
       return {
@@ -302,6 +304,8 @@ export function BankingProvider({ children }: { children: ReactNode }) {
   }): Promise<{ success: boolean; txn?: Transaction; error?: string }> => {
     const totalDeduction = params.amount + params.fee;
     const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
+    if (!currentAcc) return { success: false, error: "No account is available to debit." };
+
 
     if (currentAcc.balance < totalDeduction) {
       return {
@@ -363,6 +367,9 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     amount: number;
   }): Promise<{ success: boolean; receiptNumber: string; error?: string }> => {
     const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
+    if (!currentAcc)
+      return { success: false, receiptNumber: "", error: "No account is available to pay from." };
+
 
     if (currentAcc.balance < params.amount) {
       return {
