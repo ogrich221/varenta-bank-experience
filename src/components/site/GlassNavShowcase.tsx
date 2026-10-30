@@ -80,7 +80,7 @@ export function GlassNavShowcase() {
     touchEndX.current = null;
   };
 
-  const current = slides[currentSlide];
+  const current = slides[currentSlide]!;
 
   return (
     <section
