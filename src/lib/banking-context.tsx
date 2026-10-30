@@ -93,6 +93,7 @@ interface BankingContextType {
   addBeneficiary: (ben: Omit<Beneficiary, "id">) => void;
   removeBeneficiary: (id: string) => void;
   markNotificationsRead: () => void;
+  formatCurrency: (amount: number, currency?: string) => string;
 }
 
 const BankingContext = createContext<BankingContextType | undefined>(undefined);
@@ -832,6 +833,8 @@ export function BankingProvider({ children }: { children: ReactNode }) {
         addBeneficiary,
         removeBeneficiary,
         markNotificationsRead,
+        formatCurrency: (amount: number, currency = "USD") =>
+          new Intl.NumberFormat("en-US", { style: "currency", currency }).format(Number(amount) || 0),
       }}
     >
       {children}

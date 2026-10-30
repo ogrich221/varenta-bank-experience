@@ -179,12 +179,12 @@ function TransactionsApprovalPage() {
                       <td className="py-3.5 px-4 font-bold font-display text-white text-sm">
                         <span
                           className={
-                            t.type === "Deposit" || t.type === "Incoming"
+                            t.type === "Deposit" || t.type === "Admin Credit"
                               ? "text-emerald-400"
                               : "text-white"
                           }
                         >
-                          {t.type === "Deposit" || t.type === "Incoming" ? "+" : "-"}
+                          {t.type === "Deposit" || t.type === "Admin Credit" ? "+" : "-"}
                           {formatCurrency(t.amount, t.currency)}
                         </span>
                       </td>
