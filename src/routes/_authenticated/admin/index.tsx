@@ -20,7 +20,7 @@ const overviewQuery = queryOptions({
   queryFn: () => getOverview(),
 });
 
-export const Route = createFileRoute("/_authenticated/admin/index")({
+export const Route = createFileRoute("/_authenticated/admin/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(overviewQuery),
   head: () => ({
     meta: [
