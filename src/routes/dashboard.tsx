@@ -6,7 +6,7 @@ import {
   Globe, Bell, Settings, LogOut, CheckCircle2, AlertCircle,
   Search, Filter, Download, ChevronRight, ThumbsUp, RefreshCw,
   Phone, Mail, MapPin, Building2, Calendar, Zap, Smartphone,
-  Wifi, Droplets, Tv, Check, X, Shield, Key
+  Wifi, Droplets, Tv, Check, X, Shield, Key, ShieldAlert
 } from "lucide-react";
 import { useBanking } from "@/lib/banking-context";
 import {
@@ -311,7 +311,17 @@ export function DashboardPage() {
           </div>
 
           {/* Right Action Icons: Eye Toggle, Notifications, User Chip */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Quick Admin Portal Link */}
+            <Link
+              to="/admin"
+              className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/20 flex items-center gap-1.5 transition-all shadow-sm"
+              title="Open Treasury & Admin Operations Desk"
+            >
+              <ShieldAlert className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Admin Desk</span>
+            </Link>
+
             {/* Global Sensitive Information Privacy Toggle (Eye Icon) */}
             <button
               type="button"
@@ -442,6 +452,14 @@ export function DashboardPage() {
                 </button>
               );
             })}
+
+            <Link
+              to="/admin"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-xs font-bold text-primary hover:bg-primary/15 border border-primary/30 bg-primary/5 transition-all mt-3"
+            >
+              <ShieldAlert className="h-4 w-4 shrink-0" />
+              <span>Admin Operations Desk</span>
+            </Link>
           </div>
 
           {/* Quick Security Status Box */}

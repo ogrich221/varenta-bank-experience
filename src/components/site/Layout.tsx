@@ -60,7 +60,7 @@ export function SiteHeader() {
             <LanguageSelector />
           </div>
           <ul className="flex flex-col">
-            {[...nav, { to: "/dashboard", label: "Client Banking Portal" }, { to: "/login", label: "Login" } as const].map((n) => (
+            {[...nav, { to: "/dashboard", label: "Client Banking Portal" }, { to: "/admin", label: "Admin Operations Desk" }, { to: "/login", label: "Login" } as const].map((n) => (
               <li key={n.to}><Link to={n.to} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3 font-medium hover:bg-accent">{n.label}</Link></li>
             ))}
           </ul>
@@ -74,7 +74,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   const cols = [
     { h: "Bank", l: [["/about", "About us"], ["/services", "Services"], ["/contact", "Contact"]] },
-    { h: "Account", l: [["/login", "Login"], ["/open-account", "Open an Account"]] },
+    { h: "Portal", l: [["/login", "Client Login"], ["/open-account", "Open an Account"], ["/dashboard", "Client Banking"], ["/admin", "Treasury Admin Desk"]] },
   ] as const;
   return (
     <footer className="bg-ink text-cream">

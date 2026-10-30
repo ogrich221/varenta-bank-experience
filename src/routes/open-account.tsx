@@ -22,7 +22,7 @@ export const Route = createFileRoute("/open-account")({
 
 export function OpenAccountPage() {
   const navigate = useNavigate();
-  const { updateProfile } = useBanking();
+  const { registerNewUser } = useBanking();
   const [step, setStep] = useState<number>(1);
   const totalSteps = 5;
 
@@ -154,8 +154,8 @@ export function OpenAccountPage() {
     const generatedId = `VRN-${Math.floor(10000000 + Math.random() * 90000000)}`;
     setApplicationId(generatedId);
 
-    // Save into centralized context
-    updateProfile({
+    // Save into centralized context and register with Admin
+    registerNewUser({
       firstName: formData.firstName || "Alexander",
       middleName: formData.middleName,
       lastName: formData.lastName || "Varenta",
@@ -169,9 +169,11 @@ export function OpenAccountPage() {
       phone: `${formData.phoneCountryCode} ${formData.phoneNumber}`,
       accountType: formData.accountType,
       preferredCurrency: formData.preferredCurrency,
+      accountNumber: "",
       status: "Pending KYC",
+      tier: "World Elite",
       profilePic: formData.selfieImage || "",
-    });
+    }, formData.selfieImage);
 
     setTimeout(() => {
       setIsSubmitting(false);

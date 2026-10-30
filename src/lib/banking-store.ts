@@ -1,5 +1,6 @@
 // Varenta Bank Central State & Store
 export interface UserProfile {
+  id?: string;
   firstName: string;
   middleName?: string;
   lastName: string;
@@ -14,7 +15,7 @@ export interface UserProfile {
   accountType: "Current Account" | "Savings Account";
   preferredCurrency: string;
   accountNumber: string;
-  status: "Active" | "Pending KYC" | "Verified";
+  status: "Active" | "Pending KYC" | "Verified" | "Suspended";
   profilePic?: string;
   tier: "World Elite" | "Platinum" | "Private Client";
 }
@@ -41,8 +42,10 @@ export interface DebitCardDetails {
 
 export interface Transaction {
   id: string;
+  userId?: string;
+  userName?: string;
   date: string;
-  type: "Domestic Transfer" | "International Wire" | "Bill Payment" | "Deposit" | "Card Spend";
+  type: "Domestic Transfer" | "International Wire" | "Bill Payment" | "Deposit" | "Card Spend" | "Admin Credit" | "Admin Debit";
   description: string;
   recipientOrSender: string;
   amount: number;
@@ -51,17 +54,19 @@ export interface Transaction {
   reference?: string;
   recipientBank?: string;
   recipientAccount?: string;
+  targetAccount?: "Current Account" | "Savings Account";
   fee?: number;
+  adminNote?: string;
 }
 
-export interface BillPaymentItem {
+export interface ManagedUser {
   id: string;
-  category: "Electricity" | "Water" | "Internet" | "Cable TV" | "Airtime" | "Data Bundles" | "Utilities";
-  provider: string;
-  accountNumber: string;
-  amount: number;
-  date: string;
-  receiptNumber: string;
+  profile: UserProfile;
+  accounts: BankAccount[];
+  card: DebitCardDetails;
+  registeredAt: string;
+  approvalStatus: "Approved" | "Pending Approval" | "Declined" | "Suspended";
+  kycSelfie?: string;
 }
 
 export interface Beneficiary {
@@ -75,8 +80,9 @@ export interface Beneficiary {
   type: "domestic" | "international";
 }
 
-// Initial mock customer profile with $0.00 initial balance as requested
+// Initial mock customer profile with $0.00 initial balance
 export const DEFAULT_USER: UserProfile = {
+  id: "USR-884210",
   firstName: "Alexander",
   middleName: "V.",
   lastName: "Varenta",
@@ -126,17 +132,32 @@ export const DEFAULT_ACCOUNTS: BankAccount[] = [
   },
 ];
 
+export const INITIAL_MANAGED_USERS: ManagedUser[] = [
+  {
+    id: "USR-884210",
+    profile: DEFAULT_USER,
+    accounts: DEFAULT_ACCOUNTS,
+    card: DEFAULT_DEBIT_CARD,
+    registeredAt: "2026-10-30 05:00",
+    approvalStatus: "Approved",
+    kycSelfie: "",
+  },
+];
+
 export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-89410921",
+    userId: "USR-884210",
+    userName: "Alexander Varenta",
     date: "2026-10-30 05:45",
     type: "Deposit",
-    description: "Initial Account Allocation (Pending Clearing)",
+    description: "Initial Account Allocation (System Initialized)",
     recipientOrSender: "Treasury Deposit Sweep",
     amount: 0.0,
     currency: "USD",
     status: "Successful",
     reference: "DEP-INIT-001",
+    targetAccount: "Current Account",
   },
 ];
 
