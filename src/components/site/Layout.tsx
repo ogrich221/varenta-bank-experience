@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Menu, X, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { LanguageSelector } from "./LanguageSelector";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -27,8 +28,12 @@ export function SiteHeader() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-md focus:bg-background focus:p-2">Skip to content</a>
-      <nav aria-label="Main" className="glass mx-auto flex max-w-7xl items-center justify-between rounded-full px-4 py-2 sm:px-6">
-        <Logo />
+      <nav aria-label="Main" className="glass mx-auto flex max-w-7xl items-center justify-between rounded-full px-3 py-2 sm:px-6">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSelector />
+          <div className="h-4 w-px bg-border/60 hidden sm:block" />
+          <Logo />
+        </div>
         <ul className="hidden items-center gap-1 lg:flex">
           {nav.map((n) => (
             <li key={n.to}>
@@ -46,6 +51,10 @@ export function SiteHeader() {
       </nav>
       {open && (
         <div className="glass mx-auto mt-2 max-w-7xl rounded-3xl p-4 lg:hidden animate-rise">
+          <div className="mb-3 flex items-center justify-between border-b border-border/40 pb-2 px-1">
+            <span className="text-xs font-semibold text-muted-foreground">Select Language</span>
+            <LanguageSelector />
+          </div>
           <ul className="flex flex-col">
             {[...nav, { to: "/login", label: "Login" } as const].map((n) => (
               <li key={n.to}><Link to={n.to} onClick={() => setOpen(false)} className="block rounded-xl px-4 py-3 font-medium hover:bg-accent">{n.label}</Link></li>

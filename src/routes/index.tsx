@@ -7,6 +7,7 @@ import hero from "@/assets/hero-bank.jpg";
 import teller from "@/assets/branch-teller.jpg";
 import lobby from "@/assets/branch-lobby.jpg";
 import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
+import { GlassNavShowcase } from "@/components/site/GlassNavShowcase";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,6 +78,9 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* Interactive Experience: 360° Debit Card & 21-Country Blinking Globe with Glass Navigation */}
+      <GlassNavShowcase />
 
       {/* Dashboard preview */}
       <section className="relative px-6 py-24" aria-labelledby="dash-title">
