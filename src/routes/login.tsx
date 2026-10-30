@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { user } = useBanking();
+  const { user, managedUsers, switchActiveUser } = useBanking();
   const [email, setEmail] = useState(user.email || "alexander.varenta@client.varentabank.com");
   const [password, setPassword] = useState("••••••••••••");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,9 +29,18 @@ export function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setTimeout(() => {
+      const match = managedUsers.find(
+        (u) =>
+          u.profile.email.toLowerCase() === email.trim().toLowerCase() ||
+          u.id.toLowerCase() === email.trim().toLowerCase() ||
+          (u.accounts[0]?.accountNumber && u.accounts[0].accountNumber.toLowerCase() === email.trim().toLowerCase())
+      );
+      if (match) {
+        switchActiveUser(match.id);
+      }
       setIsLoading(false);
       navigate({ to: "/dashboard" as any });
-    }, 700);
+    }, 500);
   };
 
   const handleDemoFill = () => {

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { adminHead, money, useRows, useUpdate } from "@/lib/admin";
-import { Confirm, Loading, PageHeader, Select, Status } from "@/components/admin/ui";
+import { useState, useMemo } from "react";
+import { adminHead, money, useRows } from "@/lib/admin";
+import { Loading, PageHeader, Select, Status } from "@/components/admin/ui";
+import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/admin/cards")({ head: adminHead("Cards"), component: Cards });
 
@@ -9,30 +10,64 @@ type C = { id: string; last4: string; brand: string; card_type: string; status: 
 
 function Cards() {
   const { data, isLoading } = useRows("cards", "*, customers(full_name)");
-  const upd = useUpdate("cards");
+  const { managedUsers, adminUpdateUserProfile } = useBanking();
   const [status, setStatus] = useState("all");
-  const rows = ((data ?? []) as unknown as C[]).filter((c) => status === "all" || c.status === status);
-  const set = (c: C, s: string) => upd.mutate({ id: c.id, patch: { status: s }, label: `Card •••• ${c.last4} ${s}` });
+
+  const combinedRows = useMemo(() => {
+    const list: C[] = [];
+    const seen = new Set<string>();
+
+    for (const u of managedUsers) {
+      const last4 = u.card.cardNumber.slice(-4);
+      seen.add(u.card.cardNumber);
+      list.push({
+        id: u.id,
+        last4,
+        brand: "Mastercard World Elite",
+        card_type: u.card.cardType || "World Elite Titanium",
+        status: u.card.isFrozen ? "frozen" : "active",
+        spend_limit: u.card.dailyLimit || 25000,
+        customers: { full_name: `${u.profile.firstName} ${u.profile.lastName}` },
+      });
+    }
+
+    if (data && Array.isArray(data)) {
+      for (const row of data as any[]) {
+        if (!seen.has(row.id)) {
+          seen.add(row.id);
+          list.push(row);
+        }
+      }
+    }
+
+    return list;
+  }, [managedUsers, data]);
+
+  const rows = combinedRows.filter((c) => status === "all" || c.status === status);
+
   return (
     <>
-      <PageHeader title="Cards" desc="Freeze, unfreeze or block customer cards."><Select label="Statuses" value={status} onChange={setStatus} options={["all", "active", "frozen", "blocked"]} /></PageHeader>
-      {isLoading ? <Loading /> : (
+      <PageHeader title="Virtual & Physical Cards" desc={`${rows.length} cards in circulation across global client accounts.`}>
+        <Select label="Statuses" value={status} onChange={setStatus} options={["all", "active", "frozen", "blocked"]} />
+      </PageHeader>
+      {isLoading && combinedRows.length === 0 ? <Loading /> : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {rows.map((c) => (
-            <article key={c.id} className="glass rounded-3xl p-4">
-              <div className={`relative aspect-[1.6] overflow-hidden rounded-2xl p-5 text-primary-foreground ${c.status === "active" ? "bg-gradient-primary shadow-glow" : "bg-muted text-muted-foreground"}`}>
-                <div className="flex justify-between text-xs font-semibold uppercase tracking-widest"><span>Varenta</span><span>{c.card_type}</span></div>
-                <p className="absolute bottom-12 left-5 font-mono text-lg tracking-widest">•••• •••• •••• {c.last4}</p>
-                <div className="absolute inset-x-5 bottom-4 flex justify-between text-sm"><span>{c.customers?.full_name}</span><span className="font-bold">{c.brand}</span></div>
+            <article key={c.id} className="glass rounded-3xl p-5 border border-white/10 shadow-glass">
+              <div className={`relative aspect-[1.6] overflow-hidden rounded-2xl p-5 text-white ${c.status === "active" ? "bg-gradient-to-br from-zinc-900 via-orange-950/40 to-black border border-orange-500/30 shadow-[0_0_25px_rgba(249,115,22,0.15)]" : "bg-zinc-900/60 text-zinc-500 border border-white/5"}`}>
+                <div className="flex justify-between text-xs font-semibold uppercase tracking-widest text-orange-400">
+                  <span>Varenta Private Bank</span>
+                  <span>{c.card_type}</span>
+                </div>
+                <p className="absolute bottom-12 left-5 font-mono text-lg tracking-widest text-white">•••• •••• •••• {c.last4}</p>
+                <div className="absolute inset-x-5 bottom-4 flex justify-between text-sm">
+                  <span className="font-semibold text-zinc-200">{c.customers?.full_name}</span>
+                  <span className="font-black text-orange-500">{c.brand}</span>
+                </div>
               </div>
               <div className="mt-4 flex items-center justify-between gap-2">
-                <span className="text-xs text-muted-foreground">Limit {money(c.spend_limit)}</span>
+                <span className="text-xs text-zinc-400">Daily Limit: <strong className="text-white">{money(c.spend_limit)}</strong></span>
                 <Status value={c.status} />
-              </div>
-              <div className="mt-3 flex gap-1.5">
-                {c.status === "active" && <Confirm label="Freeze" title="Freeze card?" desc="Payments will be declined until unfrozen." onConfirm={() => set(c, "frozen")} />}
-                {c.status === "frozen" && <Confirm tone="success" label="Unfreeze" title="Unfreeze card?" desc="Payments will work again." onConfirm={() => set(c, "active")} />}
-                {c.status !== "blocked" && <Confirm tone="danger" label="Block" title="Block card permanently?" desc="A blocked card can't be reactivated." onConfirm={() => set(c, "blocked")} />}
               </div>
             </article>
           ))}

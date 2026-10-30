@@ -6,7 +6,7 @@ import {
   Globe, Bell, Settings, LogOut, CheckCircle2, AlertCircle,
   Search, Filter, Download, ChevronRight, ThumbsUp, RefreshCw,
   Phone, Mail, MapPin, Building2, Calendar, Zap, Smartphone,
-  Wifi, Droplets, Tv, Check, X, Shield, Key, ShieldAlert
+  Wifi, Droplets, Tv, Check, X, Shield, Key, ShieldAlert, Clock
 } from "lucide-react";
 import { useBanking } from "@/lib/banking-context";
 import { btnPrimary } from "@/components/site/Layout";
@@ -804,9 +804,23 @@ export function DashboardPage() {
                             >
                               {t.amount > 0 ? "+" : ""}{formatMoney(t.amount, t.currency)}
                             </p>
-                            <span className="inline-flex items-center gap-1 text-[9px] text-primary font-semibold">
-                              <ThumbsUp className="h-2.5 w-2.5" /> Approved
-                            </span>
+                            <div className="text-[10px] font-semibold mt-0.5">
+                              {t.status === "Successful" && (
+                                <span className="inline-flex items-center gap-1 text-emerald-400">
+                                  <ThumbsUp className="h-2.5 w-2.5" /> Approved 👍
+                                </span>
+                              )}
+                              {t.status === "Pending" && (
+                                <span className="inline-flex items-center gap-1 text-orange-400 animate-pulse">
+                                  <Clock className="h-2.5 w-2.5" /> Pending Review
+                                </span>
+                              )}
+                              {(t.status === "Failed" || t.status === "Reversed") && (
+                                <span className="inline-flex items-center gap-1 text-rose-400">
+                                  <AlertCircle className="h-2.5 w-2.5" /> Declined / Refunded
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1498,9 +1512,21 @@ export function DashboardPage() {
                           {t.amount > 0 ? "+" : ""}{formatMoney(t.amount, t.currency)}
                         </td>
                         <td className="py-3.5 px-5 whitespace-nowrap">
-                          <span className="inline-flex items-center gap-1 rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-0.5 text-[10px] font-bold text-green-400">
-                            <ThumbsUp className="h-3 w-3" /> {t.status}
-                          </span>
+                          {t.status === "Successful" && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-black text-emerald-400">
+                              <ThumbsUp className="h-3 w-3" /> Approved 👍
+                            </span>
+                          )}
+                          {t.status === "Pending" && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-orange-500/40 bg-orange-500/15 px-2.5 py-0.5 text-[10px] font-bold text-orange-400 animate-pulse">
+                              <Clock className="h-3 w-3" /> Pending Review
+                            </span>
+                          )}
+                          {(t.status === "Failed" || t.status === "Reversed") && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-rose-500/40 bg-rose-500/15 px-2.5 py-0.5 text-[10px] font-bold text-rose-400">
+                              <AlertCircle className="h-3 w-3" /> Declined / Refunded
+                            </span>
+                          )}
                         </td>
                       </tr>
                     ))}

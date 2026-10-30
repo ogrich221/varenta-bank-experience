@@ -34,22 +34,44 @@ interface BankingContextType {
   registerNewUser: (profile: Omit<UserProfile, "id">, kycSelfie?: string) => ManagedUser;
   adminApproveUser: (userId: string) => void;
   adminDeclineUser: (userId: string) => void;
+  adminUpdateUserProfile: (
+    userId: string,
+    updatedProfile: Partial<UserProfile>,
+    approvalStatus?: "Approved" | "Pending Approval" | "Declined" | "Suspended"
+  ) => void;
+  formatCurrency: (amount: number | string | null | undefined, currency?: string) => string;
 
   // Admin Credit & Debit with Custom Date & Custom Narration
-  adminCreditUser: (params: {
-    userId: string;
-    accountType: "Current Account" | "Savings Account";
-    amount: number;
-    date: string;
-    narration: string;
-  }) => Transaction;
-  adminDebitUser: (params: {
-    userId: string;
-    accountType: "Current Account" | "Savings Account";
-    amount: number;
-    date: string;
-    narration: string;
-  }) => Transaction;
+  adminCreditUser: (
+    param1:
+      | {
+          userId: string;
+          accountType: "Current Account" | "Savings Account" | "checking" | "savings";
+          amount: number;
+          date?: string;
+          narration?: string;
+        }
+      | string,
+    param2?: number,
+    param3?: "Current Account" | "Savings Account" | "checking" | "savings" | string,
+    param4?: string,
+    param5?: string
+  ) => Transaction;
+  adminDebitUser: (
+    param1:
+      | {
+          userId: string;
+          accountType: "Current Account" | "Savings Account" | "checking" | "savings";
+          amount: number;
+          date?: string;
+          narration?: string;
+        }
+      | string,
+    param2?: number,
+    param3?: "Current Account" | "Savings Account" | "checking" | "savings" | string,
+    param4?: string,
+    param5?: string
+  ) => Transaction;
 
   // Admin Transaction Approvals & Declines
   adminApproveTransaction: (txnId: string) => void;
@@ -94,6 +116,20 @@ interface BankingContextType {
   removeBeneficiary: (id: string) => void;
   markNotificationsRead: () => void;
 }
+
+export const formatCurrency = (amount: number | string | null | undefined, currency: string = "USD"): string => {
+  const num = typeof amount === "number" ? amount : parseFloat(String(amount || 0)) || 0;
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency || "USD",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
+  } catch {
+    return `$${num.toFixed(2)}`;
+  }
+};
 
 const BankingContext = createContext<BankingContextType | undefined>(undefined);
 
@@ -290,29 +326,101 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  // ADMIN CREDIT USER WITH CUSTOM DATE & NARRATION
-  const adminCreditUser = (params: {
-    userId: string;
-    accountType: "Current Account" | "Savings Account";
-    amount: number;
-    date: string;
-    narration: string;
-  }): Transaction => {
-    const targetUser = managedUsers.find((u) => u.id === params.userId);
+  // ADMIN UPDATE USER PROFILE (Permit admin to edit user profile)
+  const adminUpdateUserProfile = (
+    userId: string,
+    updatedProfile: Partial<UserProfile>,
+    approvalStatus?: "Approved" | "Pending Approval" | "Declined" | "Suspended"
+  ) => {
+    setManagedUsers((prev) =>
+      prev.map((u) => {
+        if (u.id !== userId) return u;
+        const newProfile = { ...u.profile, ...updatedProfile };
+        const newCardholderName =
+          newProfile.firstName && newProfile.lastName
+            ? `${newProfile.firstName} ${newProfile.lastName}`.toUpperCase()
+            : u.card.cardholderName;
+
+        return {
+          ...u,
+          profile: newProfile,
+          approvalStatus: approvalStatus || u.approvalStatus,
+          card: {
+            ...u.card,
+            cardholderName: newCardholderName,
+          },
+        };
+      })
+    );
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        title: `Administrative Update: Profile records for client ${userId} were successfully updated.`,
+        time: "Just now",
+        read: false,
+      },
+      ...prev,
+    ]);
+  };
+
+  // ADMIN CREDIT USER WITH CUSTOM DATE & NARRATION (Supports object or positional arguments)
+  const adminCreditUser = (
+    arg1:
+      | {
+          userId: string;
+          accountType: "Current Account" | "Savings Account" | "checking" | "savings";
+          amount: number;
+          date?: string;
+          narration?: string;
+        }
+      | string,
+    arg2?: number,
+    arg3?: string,
+    arg4?: string,
+    arg5?: string
+  ): Transaction => {
+    let userId: string;
+    let rawAccountType: string;
+    let amount: number;
+    let dateStr: string;
+    let narrationStr: string;
+
+    if (typeof arg1 === "object" && arg1 !== null) {
+      userId = arg1.userId;
+      rawAccountType = arg1.accountType;
+      amount = arg1.amount;
+      dateStr = arg1.date || "";
+      narrationStr = arg1.narration || "";
+    } else {
+      userId = arg1;
+      amount = arg2 ?? 0;
+      rawAccountType = arg3 || "Current Account";
+      narrationStr = arg4 || "";
+      dateStr = arg5 || "";
+    }
+
+    const normAccountType: "Current Account" | "Savings Account" =
+      rawAccountType && rawAccountType.toLowerCase().includes("saving")
+        ? "Savings Account"
+        : "Current Account";
+
+    const targetUser = managedUsers.find((u) => u.id === userId);
     const txnId = `TXN-${Math.floor(10000000 + Math.random() * 90000000)}`;
+    const effectiveDate = dateStr || new Date().toISOString().replace("T", " ").substring(0, 16);
 
     const newTxn: Transaction = {
       id: txnId,
-      userId: params.userId,
+      userId,
       userName: targetUser ? `${targetUser.profile.firstName} ${targetUser.profile.lastName}` : "Client",
-      date: params.date || new Date().toISOString().replace("T", " ").substring(0, 16),
+      date: effectiveDate,
       type: "Admin Credit",
-      description: params.narration || "Official Credit by Varenta Treasury Desk",
+      description: narrationStr || "Official Credit by Varenta Treasury Desk",
       recipientOrSender: "Varenta Central Banking Authority",
-      amount: params.amount,
+      amount: Math.abs(amount),
       currency: "USD",
       status: "Successful",
-      targetAccount: params.accountType,
+      targetAccount: normAccountType,
       reference: `ADM-CR-${Math.floor(100000 + Math.random() * 900000)}`,
       adminNote: "Authorized by Administration",
     };
@@ -320,12 +428,12 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     // Update user's account balance
     setManagedUsers((prev) =>
       prev.map((u) => {
-        if (u.id !== params.userId) return u;
+        if (u.id !== userId) return u;
         return {
           ...u,
           accounts: u.accounts.map((acc) => {
-            if (acc.type !== params.accountType) return acc;
-            const updated = Number((acc.balance + params.amount).toFixed(2));
+            if (acc.type !== normAccountType) return acc;
+            const updated = Number((acc.balance + Math.abs(amount)).toFixed(2));
             return {
               ...acc,
               balance: updated,
@@ -341,7 +449,7 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) => [
       {
         id: `notif-${Date.now()}`,
-        title: `Account Credited: +$${params.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} (${params.narration})`,
+        title: `Account Credited: +$${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2 })} USD (${newTxn.description})`,
         time: "Just now",
         read: false,
       },
@@ -351,29 +459,63 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     return newTxn;
   };
 
-  // ADMIN DEBIT USER WITH CUSTOM DATE & NARRATION
-  const adminDebitUser = (params: {
-    userId: string;
-    accountType: "Current Account" | "Savings Account";
-    amount: number;
-    date: string;
-    narration: string;
-  }): Transaction => {
-    const targetUser = managedUsers.find((u) => u.id === params.userId);
+  // ADMIN DEBIT USER WITH CUSTOM DATE & NARRATION (Supports object or positional arguments)
+  const adminDebitUser = (
+    arg1:
+      | {
+          userId: string;
+          accountType: "Current Account" | "Savings Account" | "checking" | "savings";
+          amount: number;
+          date?: string;
+          narration?: string;
+        }
+      | string,
+    arg2?: number,
+    arg3?: string,
+    arg4?: string,
+    arg5?: string
+  ): Transaction => {
+    let userId: string;
+    let rawAccountType: string;
+    let amount: number;
+    let dateStr: string;
+    let narrationStr: string;
+
+    if (typeof arg1 === "object" && arg1 !== null) {
+      userId = arg1.userId;
+      rawAccountType = arg1.accountType;
+      amount = arg1.amount;
+      dateStr = arg1.date || "";
+      narrationStr = arg1.narration || "";
+    } else {
+      userId = arg1;
+      amount = arg2 ?? 0;
+      rawAccountType = arg3 || "Current Account";
+      narrationStr = arg4 || "";
+      dateStr = arg5 || "";
+    }
+
+    const normAccountType: "Current Account" | "Savings Account" =
+      rawAccountType && rawAccountType.toLowerCase().includes("saving")
+        ? "Savings Account"
+        : "Current Account";
+
+    const targetUser = managedUsers.find((u) => u.id === userId);
     const txnId = `TXN-${Math.floor(10000000 + Math.random() * 90000000)}`;
+    const effectiveDate = dateStr || new Date().toISOString().replace("T", " ").substring(0, 16);
 
     const newTxn: Transaction = {
       id: txnId,
-      userId: params.userId,
+      userId,
       userName: targetUser ? `${targetUser.profile.firstName} ${targetUser.profile.lastName}` : "Client",
-      date: params.date || new Date().toISOString().replace("T", " ").substring(0, 16),
+      date: effectiveDate,
       type: "Admin Debit",
-      description: params.narration || "Official Debit by Varenta Administration",
+      description: narrationStr || "Official Debit by Varenta Administration",
       recipientOrSender: "Varenta Banking Desk",
-      amount: -params.amount,
+      amount: -Math.abs(amount),
       currency: "USD",
       status: "Successful",
-      targetAccount: params.accountType,
+      targetAccount: normAccountType,
       reference: `ADM-DB-${Math.floor(100000 + Math.random() * 900000)}`,
       adminNote: "Authorized by Administration",
     };
@@ -381,12 +523,12 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     // Update user's account balance
     setManagedUsers((prev) =>
       prev.map((u) => {
-        if (u.id !== params.userId) return u;
+        if (u.id !== userId) return u;
         return {
           ...u,
           accounts: u.accounts.map((acc) => {
-            if (acc.type !== params.accountType) return acc;
-            const updated = Number((acc.balance - params.amount).toFixed(2));
+            if (acc.type !== normAccountType) return acc;
+            const updated = Number((acc.balance - Math.abs(amount)).toFixed(2));
             return {
               ...acc,
               balance: updated,
@@ -402,7 +544,7 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) => [
       {
         id: `notif-${Date.now()}`,
-        title: `Account Debited: -$${params.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} (${params.narration})`,
+        title: `Account Debited: -$${Math.abs(amount).toLocaleString(undefined, { minimumFractionDigits: 2 })} USD (${newTxn.description})`,
         time: "Just now",
         read: false,
       },
@@ -568,6 +710,13 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     description: string;
     pin: string;
   }): Promise<{ success: boolean; txn?: Transaction; error?: string }> => {
+    if (user.status === "Suspended") {
+      return {
+        success: false,
+        error: "Your account is currently suspended by Administration. Outgoing transactions are prohibited.",
+      };
+    }
+
     const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
     if (!currentAcc) return { success: false, error: "No account is available to debit." };
 
@@ -648,6 +797,13 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     description: string;
     pin: string;
   }): Promise<{ success: boolean; txn?: Transaction; error?: string }> => {
+    if (user.status === "Suspended") {
+      return {
+        success: false,
+        error: "Your account is currently suspended by Administration. Outgoing wires are prohibited.",
+      };
+    }
+
     const totalDeduction = params.amount + params.fee;
     const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
     if (!currentAcc) return { success: false, error: "No account is available to debit." };
@@ -817,6 +973,8 @@ export function BankingProvider({ children }: { children: ReactNode }) {
         registerNewUser,
         adminApproveUser,
         adminDeclineUser,
+        adminUpdateUserProfile,
+        formatCurrency,
         adminCreditUser,
         adminDebitUser,
         adminApproveTransaction,

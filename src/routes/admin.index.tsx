@@ -1,35 +1,41 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import {
   Wallet, Users, ArrowDownLeft, ArrowUpRight, Clock, CheckCircle2, XCircle,
   ThumbsUp, PlusCircle, MinusCircle, Calendar, RefreshCcw, Trash2, AlertTriangle,
-  FileText, ShieldCheck, DollarSign, Search, Check, X
+  FileText, ShieldCheck, DollarSign, Search, Check, X, Edit3, Eye, Camera, ExternalLink
 } from "lucide-react";
 import { toast } from "sonner";
-import { useBanking } from "@/lib/banking-context";
+import { useBanking, formatCurrency } from "@/lib/banking-context";
+import { ManagedUser, UserProfile } from "@/lib/banking-store";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/")({
+  head: () => ({
+    meta: [{ title: "Central Treasury Command — Varenta Admin" }],
+  }),
   component: AdminCommandCenter,
 });
 
 function AdminCommandCenter() {
+  const navigate = useNavigate();
   const {
     managedUsers,
     clearAllUsers,
+    switchActiveUser,
     adminCreditUser,
     adminDebitUser,
+    adminUpdateUserProfile,
     adminApproveTransaction,
     adminDeclineTransaction,
     transactions,
     totalBalance,
-    formatCurrency,
   } = useBanking();
 
   // Credit / Debit Terminal State
   const [selectedUserId, setSelectedUserId] = useState<string>(managedUsers[0]?.id || "");
   const [actionType, setActionType] = useState<"credit" | "debit">("credit");
-  const [accountType, setAccountType] = useState<"checking" | "savings">("checking");
+  const [accountType, setAccountType] = useState<"Current Account" | "Savings Account">("Current Account");
   const [amountStr, setAmountStr] = useState<string>("");
   const [narration, setNarration] = useState<string>("");
   const [customDate, setCustomDate] = useState<string>(() => {
@@ -38,6 +44,12 @@ function AdminCommandCenter() {
     return now.toISOString().slice(0, 16);
   });
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Edit Profile Modal State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
+  const [profileForm, setProfileForm] = useState<Partial<UserProfile>>({});
+  const [approvalStatusForm, setApprovalStatusForm] = useState<"Approved" | "Pending Approval" | "Declined" | "Suspended">("Approved");
 
   // Clear Users Dialog State
   const [clearModalOpen, setClearModalOpen] = useState(false);
@@ -99,13 +111,25 @@ function AdminCommandCenter() {
 
     setIsProcessing(true);
     try {
-      const parsedDate = customDate ? new Date(customDate).toISOString() : new Date().toISOString();
+      const parsedDate = customDate ? new Date(customDate).toISOString().replace("T", " ").substring(0, 16) : new Date().toISOString();
       if (actionType === "credit") {
-        adminCreditUser(selectedUserId, num, accountType, narration.trim(), parsedDate);
-        toast.success(`Successfully credited ${formatCurrency(num)} to user (${accountType})`);
+        adminCreditUser({
+          userId: selectedUserId,
+          amount: num,
+          accountType,
+          narration: narration.trim(),
+          date: parsedDate,
+        });
+        toast.success(`Successfully credited ${formatCurrency(num)} to customer`);
       } else {
-        adminDebitUser(selectedUserId, num, accountType, narration.trim(), parsedDate);
-        toast.success(`Successfully debited ${formatCurrency(num)} from user (${accountType})`);
+        adminDebitUser({
+          userId: selectedUserId,
+          amount: num,
+          accountType,
+          narration: narration.trim(),
+          date: parsedDate,
+        });
+        toast.success(`Successfully debited ${formatCurrency(num)} from customer`);
       }
       setAmountStr("");
       setNarration("");
@@ -114,6 +138,55 @@ function AdminCommandCenter() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Open Edit Profile Modal
+  const handleOpenEdit = (user: ManagedUser) => {
+    setEditingUser(user);
+    setProfileForm({
+      firstName: user.profile.firstName,
+      middleName: user.profile.middleName || "",
+      lastName: user.profile.lastName,
+      email: user.profile.email,
+      phone: user.profile.phone,
+      address: user.profile.address,
+      country: user.profile.country,
+      nationality: user.profile.nationality,
+      occupation: user.profile.occupation,
+      dob: user.profile.dob,
+      gender: user.profile.gender,
+      status: user.profile.status,
+      tier: user.profile.tier,
+      preferredCurrency: user.profile.preferredCurrency,
+      profilePic: user.profile.profilePic || user.kycSelfie || "",
+    });
+    setApprovalStatusForm(user.approvalStatus);
+    setEditModalOpen(true);
+  };
+
+  // Save Profile Changes
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    if (!profileForm.firstName?.trim() || !profileForm.lastName?.trim()) {
+      toast.error("First and Last name are required");
+      return;
+    }
+
+    try {
+      adminUpdateUserProfile(editingUser.id, profileForm, approvalStatusForm);
+      toast.success(`Profile for ${profileForm.firstName} ${profileForm.lastName} updated successfully`);
+      setEditModalOpen(false);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to update profile");
+    }
+  };
+
+  // Switch to Client View
+  const handleViewAsClient = (userId: string) => {
+    switchActiveUser(userId);
+    toast.success("Switched active user session to selected client");
+    navigate({ to: "/dashboard" });
   };
 
   // Handle Clear All Users
@@ -138,11 +211,19 @@ function AdminCommandCenter() {
             Treasury <span className="text-orange-500">Command Center</span>
           </h1>
           <p className="text-sm text-zinc-400 mt-1">
-            Real-time control over liquidity, user credit/debits, transaction approvals, and user clearing.
+            Real-time control over liquidity, user credit/debits, profile editing, and transaction approvals.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            to="/admin/customers"
+            className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3.5 py-2 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-all"
+          >
+            <Users className="h-4 w-4 text-orange-400" />
+            <span>Customer Directory</span>
+          </Link>
+
           <button
             onClick={() => setClearModalOpen(true)}
             className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/30 px-3.5 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-500/20 hover:border-rose-500 transition-all shadow-[0_0_15px_rgba(244,63,94,0.1)]"
@@ -236,11 +317,15 @@ function AdminCommandCenter() {
                     onChange={(e) => setSelectedUserId(e.target.value)}
                     className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-xs text-white outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
                   >
-                    {managedUsers.map((u) => (
-                      <option key={u.id} value={u.id} className="bg-zinc-900 text-white">
-                        {u.name} — {u.email} ({formatCurrency(u.accounts.totalBalance)})
-                      </option>
-                    ))}
+                    {managedUsers.map((u) => {
+                      const fullName = `${u.profile.firstName} ${u.profile.lastName}`;
+                      const total = u.accounts.reduce((s, a) => s + a.balance, 0);
+                      return (
+                        <option key={u.id} value={u.id} className="bg-zinc-900 text-white">
+                          {fullName} — {u.profile.email} ({formatCurrency(total)})
+                        </option>
+                      );
+                    })}
                   </select>
                 )}
               </div>
@@ -282,9 +367,9 @@ function AdminCommandCenter() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => setAccountType("checking")}
+                    onClick={() => setAccountType("Current Account")}
                     className={`rounded-xl py-2 px-3 text-xs font-semibold border transition-all ${
-                      accountType === "checking"
+                      accountType === "Current Account"
                         ? "bg-orange-500/20 border-orange-500 text-orange-400"
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
@@ -293,9 +378,9 @@ function AdminCommandCenter() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setAccountType("savings")}
+                    onClick={() => setAccountType("Savings Account")}
                     className={`rounded-xl py-2 px-3 text-xs font-semibold border transition-all ${
-                      accountType === "savings"
+                      accountType === "Savings Account"
                         ? "bg-orange-500/20 border-orange-500 text-orange-400"
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
@@ -521,12 +606,12 @@ function AdminCommandCenter() {
                         <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2">
                           <span
                             className={`text-base font-black font-display ${
-                              t.type === "Deposit" || t.type === "Incoming"
+                              t.type === "Deposit" || t.type === "Admin Credit" || t.amount > 0
                                 ? "text-emerald-400"
                                 : "text-white"
                             }`}
                           >
-                            {t.type === "Deposit" || t.type === "Incoming" ? "+" : "-"}
+                            {t.amount > 0 ? "+" : ""}
                             {formatCurrency(t.amount, t.currency)}
                           </span>
 
@@ -577,7 +662,7 @@ function AdminCommandCenter() {
           <div>
             <h2 className="text-base font-bold text-white">Live Customer Directory</h2>
             <p className="text-[11px] text-zinc-400">
-              Every client registered through Open Account or administrative onboarding
+              Direct access to edit profiles, adjust account balances, or view personal dashboard.
             </p>
           </div>
           <span className="text-xs text-zinc-400 font-mono">
@@ -607,62 +692,327 @@ function AdminCommandCenter() {
                   <th className="py-3 px-3">Savings Balance</th>
                   <th className="py-3 px-3">Total Balance</th>
                   <th className="py-3 px-3">KYC Status</th>
-                  <th className="py-3 px-3 text-right">Quick Action</th>
+                  <th className="py-3 px-3 text-right">Administrative Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {managedUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-white/5 transition-colors">
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={u.avatarUrl}
-                          alt={u.name}
-                          className="h-8 w-8 rounded-full object-cover border border-orange-500/30"
-                        />
-                        <div>
-                          <p className="font-bold text-white">{u.name}</p>
-                          <p className="text-[11px] text-zinc-400">{u.email}</p>
+                {managedUsers.map((u) => {
+                  const fullName = `${u.profile.firstName} ${u.profile.lastName}`;
+                  const checking = u.accounts.find((a) => a.type === "Current Account")?.balance ?? 0;
+                  const savings = u.accounts.find((a) => a.type === "Savings Account")?.balance ?? 0;
+                  const total = u.accounts.reduce((s, a) => s + a.balance, 0);
+                  const avatar = u.profile.profilePic || u.kycSelfie;
+                  const accNum = u.accounts[0]?.accountNumber || u.profile.accountNumber;
+
+                  return (
+                    <tr key={u.id} className="hover:bg-white/5 transition-colors">
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-3">
+                          {avatar ? (
+                            <img
+                              src={avatar}
+                              alt={fullName}
+                              className="h-8 w-8 rounded-full object-cover border border-orange-500/30"
+                            />
+                          ) : (
+                            <div className="grid h-8 w-8 place-items-center rounded-full bg-orange-500/20 text-orange-400 font-bold border border-orange-500/30">
+                              {u.profile.firstName[0]}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-white">{fullName}</p>
+                            <p className="text-[11px] text-zinc-400">{u.profile.email}</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 font-mono text-zinc-300">
-                      {u.accounts.accountNumber}
-                    </td>
-                    <td className="py-3 px-3 font-semibold text-white">
-                      {formatCurrency(u.accounts.checkingBalance, u.accounts.currency)}
-                    </td>
-                    <td className="py-3 px-3 font-semibold text-white">
-                      {formatCurrency(u.accounts.savingsBalance, u.accounts.currency)}
-                    </td>
-                    <td className="py-3 px-3 font-bold text-orange-400">
-                      {formatCurrency(u.accounts.totalBalance, u.accounts.currency)}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                        <ShieldCheck className="h-3 w-3" />
-                        <span>Verified</span>
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 text-right">
-                      <button
-                        onClick={() => {
-                          setSelectedUserId(u.id);
-                          window.scrollTo({ top: 120, behavior: "smooth" });
-                          toast.info(`Selected ${u.name} in Credit/Debit Terminal above`);
-                        }}
-                        className="rounded-lg bg-orange-500/10 border border-orange-500/30 px-2.5 py-1 text-[11px] font-semibold text-orange-400 hover:bg-orange-500/20"
-                      >
-                        Adjust Balance
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-3 px-3 font-mono text-zinc-300">
+                        {accNum}
+                      </td>
+                      <td className="py-3 px-3 font-semibold text-white">
+                        {formatCurrency(checking, u.profile.preferredCurrency)}
+                      </td>
+                      <td className="py-3 px-3 font-semibold text-white">
+                        {formatCurrency(savings, u.profile.preferredCurrency)}
+                      </td>
+                      <td className="py-3 px-3 font-bold text-orange-400">
+                        {formatCurrency(total, u.profile.preferredCurrency)}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                          <ShieldCheck className="h-3 w-3" />
+                          <span>{u.profile.status}</span>
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <div className="inline-flex items-center gap-1.5">
+                          {/* Edit Profile */}
+                          <button
+                            onClick={() => handleOpenEdit(u)}
+                            className="rounded-lg bg-orange-500/10 border border-orange-500/30 px-2.5 py-1 text-[11px] font-semibold text-orange-400 hover:bg-orange-500/20"
+                            title="Edit Profile"
+                          >
+                            <Edit3 className="h-3 w-3 inline mr-1" />
+                            Edit Profile
+                          </button>
+
+                          {/* Quick Adjust */}
+                          <button
+                            onClick={() => {
+                              setSelectedUserId(u.id);
+                              window.scrollTo({ top: 120, behavior: "smooth" });
+                              toast.info(`Selected ${fullName} in Credit/Debit Terminal above`);
+                            }}
+                            className="rounded-lg bg-white/5 border border-white/10 px-2.5 py-1 text-[11px] font-semibold text-zinc-300 hover:bg-white/10"
+                            title="Adjust Balance"
+                          >
+                            Adjust Balance
+                          </button>
+
+                          {/* View as Client */}
+                          <button
+                            onClick={() => handleViewAsClient(u.id)}
+                            className="rounded-lg bg-white/5 border border-white/10 px-2 py-1 text-[11px] font-semibold text-zinc-400 hover:text-white"
+                            title="View as Client"
+                          >
+                            <Eye className="h-3 w-3 inline" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
         </div>
       </div>
+
+      {/* EDIT USER PROFILE MODAL */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent className="border border-orange-500/30 bg-zinc-950 text-white backdrop-blur-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white text-lg font-bold">
+              <Edit3 className="h-5 w-5 text-orange-400" />
+              <span>Edit Client Profile — {editingUser?.profile.firstName} {editingUser?.profile.lastName}</span>
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400 text-xs">
+              Modify personal details, residential data, banking tier, and authorization status. Changes immediately sync to the user's dashboard.
+            </DialogDescription>
+          </DialogHeader>
+
+          {editingUser && (
+            <form onSubmit={handleSaveProfile} className="space-y-4 mt-2 text-xs">
+              {/* Profile Image & Identification */}
+              <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-3">
+                {profileForm.profilePic ? (
+                  <img
+                    src={profileForm.profilePic}
+                    alt="Preview"
+                    className="h-14 w-14 rounded-full object-cover border-2 border-orange-500 shadow-glow"
+                  />
+                ) : (
+                  <div className="grid h-14 w-14 place-items-center rounded-full bg-orange-500/20 text-orange-400 font-bold border border-orange-500/40">
+                    <Camera className="h-6 w-6" />
+                  </div>
+                )}
+                <div className="flex-1 space-y-1">
+                  <label className="block font-semibold text-zinc-300">Profile Picture / Avatar URL</label>
+                  <input
+                    type="text"
+                    value={profileForm.profilePic || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, profilePic: e.target.value })}
+                    placeholder="https://... image URL or Base64 data"
+                    className="w-full rounded-xl border border-white/15 bg-black/50 px-3 py-1.5 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Names */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">First Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={profileForm.firstName || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, firstName: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Middle Name</label>
+                  <input
+                    type="text"
+                    value={profileForm.middleName || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, middleName: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Last Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={profileForm.lastName || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, lastName: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Contact info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    value={profileForm.email || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Phone Number *</label>
+                  <input
+                    type="text"
+                    required
+                    value={profileForm.phone || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Residence & Location */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Residential Address</label>
+                  <input
+                    type="text"
+                    value={profileForm.address || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Country of Residence</label>
+                  <input
+                    type="text"
+                    value={profileForm.country || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, country: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Nationality</label>
+                  <input
+                    type="text"
+                    value={profileForm.nationality || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, nationality: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              {/* Demographics */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Occupation</label>
+                  <input
+                    type="text"
+                    value={profileForm.occupation || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, occupation: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Date of Birth</label>
+                  <input
+                    type="date"
+                    value={profileForm.dob || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, dob: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500 [color-scheme:dark]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Gender</label>
+                  <select
+                    value={profileForm.gender || "Not specified"}
+                    onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Status and Governance Controls */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-3">
+                <div>
+                  <label className="block font-semibold text-orange-400 mb-1">KYC / Account Status</label>
+                  <select
+                    value={profileForm.status || "Active"}
+                    onChange={(e) => setProfileForm({ ...profileForm, status: e.target.value as any })}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Verified">Verified</option>
+                    <option value="Pending KYC">Pending KYC</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-orange-400 mb-1">Administrative Approval</label>
+                  <select
+                    value={approvalStatusForm}
+                    onChange={(e) => setApprovalStatusForm(e.target.value as any)}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  >
+                    <option value="Approved">Approved</option>
+                    <option value="Pending Approval">Pending Approval</option>
+                    <option value="Declined">Declined</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-orange-400 mb-1">Banking Tier</label>
+                  <select
+                    value={profileForm.tier || "World Elite"}
+                    onChange={(e) => setProfileForm({ ...profileForm, tier: e.target.value as any })}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  >
+                    <option value="World Elite">World Elite</option>
+                    <option value="Platinum">Platinum</option>
+                    <option value="Private Client">Private Client</option>
+                  </select>
+                </div>
+              </div>
+
+              <DialogFooter className="mt-4 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditModalOpen(false)}
+                  className="rounded-xl border border-white/10 px-4 py-2 text-xs font-semibold text-zinc-400 hover:bg-white/5"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-xl bg-orange-500 hover:bg-orange-400 px-5 py-2 text-xs font-bold text-black shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+                >
+                  Save Profile Changes
+                </button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Confirmation Dialog for Clear All Users */}
       <Dialog open={clearModalOpen} onOpenChange={setClearModalOpen}>
