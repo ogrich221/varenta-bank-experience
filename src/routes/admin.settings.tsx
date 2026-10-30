@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { adminHead, audit, date, useRows } from "@/lib/admin";
 import { abtn, Confirm, Loading, PageHeader, Panel, Table } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/settings")({ head: adminHead("Settings"), component: SettingsPage });
+export const Route = createFileRoute("/admin/settings")({ staticData: { sitemap: false }, head: adminHead("Settings"), component: SettingsPage });
 
 const input = "mt-1 h-10 w-full rounded-xl border border-input bg-background/40 px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 

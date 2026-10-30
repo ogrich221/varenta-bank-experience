@@ -4,7 +4,7 @@ import { adminHead, money, useRows } from "@/lib/admin";
 import { Loading, PageHeader, Panel } from "@/components/admin/ui";
 import { monthly } from "@/components/admin/stats";
 
-export const Route = createFileRoute("/admin/analytics")({ head: adminHead("Analytics"), component: Analytics });
+export const Route = createFileRoute("/admin/analytics")({ staticData: { sitemap: false }, head: adminHead("Analytics"), component: Analytics });
 
 const tip = { contentStyle: { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 12 } };
 const axis = { stroke: "var(--muted-foreground)", fontSize: 12 };

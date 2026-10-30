@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/admin/ui";
 import { TxnManager } from "@/components/admin/TxnManager";
 
 export const Route = createFileRoute("/admin/deposits")({
+  staticData: { sitemap: false },
   head: adminHead("Deposits"),
   component: () => (<><PageHeader title="Deposits" desc="Incoming deposits, pending approvals and completed credits." /><TxnManager type="deposit" /></>),
 });

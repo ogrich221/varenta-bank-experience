@@ -10,6 +10,7 @@ import { useBanking } from "@/lib/banking-context";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/customers")({
+  staticData: { sitemap: false },
   validateSearch: (s: Record<string, unknown>): { q?: string } => (typeof s["q"] === "string" && s["q"] ? { q: s["q"] } : {}),
   head: () => ({
     meta: [{ title: "Customer Book — Varenta Admin" }],

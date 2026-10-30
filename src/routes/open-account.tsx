@@ -9,6 +9,7 @@ import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
 import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/open-account")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Open an Account — Varenta Bank" },

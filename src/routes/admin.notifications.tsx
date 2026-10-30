@@ -4,7 +4,7 @@ import { AlertTriangle, Bell, CheckCircle2, Info, ShieldAlert } from "lucide-rea
 import { adminHead, date, useRows, useUpdate } from "@/lib/admin";
 import { abtn, Loading, PageHeader, Select, Status } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/notifications")({ head: adminHead("Notifications"), component: Notifications });
+export const Route = createFileRoute("/admin/notifications")({ staticData: { sitemap: false }, head: adminHead("Notifications"), component: Notifications });
 
 const icons = { info: Info, success: CheckCircle2, warning: AlertTriangle, critical: ShieldAlert } as Record<string, typeof Bell>;
 

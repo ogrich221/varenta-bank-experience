@@ -17,6 +17,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as OpenAccountRouteImport } from './routes/open-account'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAccountsRouteImport } from './routes/admin.accounts'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -70,6 +71,11 @@ const OpenAccountRoute = OpenAccountRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cards': typeof AdminCardsRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cards': typeof AdminCardsRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/accounts': typeof AdminAccountsRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/cards': typeof AdminCardsRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/sitemap.xml'
     | '/admin/accounts'
     | '/admin/analytics'
     | '/admin/cards'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/sitemap.xml'
     | '/admin/accounts'
     | '/admin/analytics'
     | '/admin/cards'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/open-account'
     | '/services'
+    | '/sitemap.xml'
     | '/admin/accounts'
     | '/admin/analytics'
     | '/admin/cards'
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OpenAccountRoute: typeof OpenAccountRoute
   ServicesRoute: typeof ServicesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
 }
 
@@ -357,6 +370,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -503,6 +523,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OpenAccountRoute: OpenAccountRoute,
   ServicesRoute: ServicesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport

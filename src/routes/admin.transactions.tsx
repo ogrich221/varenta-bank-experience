@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/admin/transactions")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [{ title: "Transactions & Approvals — Varenta Admin" }],
   }),
