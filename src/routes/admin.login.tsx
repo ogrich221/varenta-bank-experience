@@ -1,8 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowRight, KeyRound, Mail, ShieldCheck, Sparkles, Eye, EyeOff, UserPlus } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Mail,
+  ShieldCheck,
+  Sparkles,
+  UserPlus,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getAdminSetupStatus, whoAmI } from "@/lib/admin.functions";
+
+const setupQuery = queryOptions({
+  queryKey: ["admin", "setup"],
+  queryFn: () => getAdminSetupStatus(),
+  staleTime: 60_000,
+});
 
 export const Route = createFileRoute("/admin/login")({
   head: () => ({
@@ -24,17 +40,11 @@ export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
 });
 
-import { queryOptions } from "@tanstack/react-query";
-
-const setupQuery = queryOptions({
-  queryKey: ["admin", "setup"],
-  queryFn: () => getAdminSetupStatus(),
-  staleTime: 60_000,
-});
-
 function AdminLoginPage() {
   const navigate = useNavigate();
-  const hasAdmin = useQueryValue();
+  const { data } = useSuspenseQuery(setupQuery);
+  const hasAdmin = data.hasAdmin;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -42,11 +52,11 @@ function AdminLoginPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Already inside? Go straight to the console instead of showing the form.
+  // Already signed in as an administrator? Go straight to the console.
   useEffect(() => {
     let active = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (!active || !data.user) return;
+    supabase.auth.getUser().then(({ data: session }) => {
+      if (!active || !session.user) return;
       whoAmI()
         .then((me) => {
           if (me.isAdmin) navigate({ to: "/admin", replace: true });
@@ -86,19 +96,19 @@ function AdminLoginPage() {
     setError(null);
     setNotice(null);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { data: signed, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/admin/login` },
       });
       if (signUpError) throw signUpError;
 
-      if (data.session) {
+      if (signed.session) {
         navigate({ to: "/admin" });
         return;
       }
       setNotice(
-        "Account created. Confirm it from the email we just sent, then sign in here as the first administrator.",
+        "Account created. Open the confirmation email we just sent, then sign in here as the first administrator.",
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create the account.");
@@ -199,7 +209,10 @@ function AdminLoginPage() {
               </p>
             ) : null}
             {error ? (
-              <p role="alert" className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-xs text-red-400">
+              <p
+                role="alert"
+                className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-xs text-red-400"
+              >
                 {error}
               </p>
             ) : null}
@@ -228,18 +241,4 @@ function AdminLoginPage() {
       </div>
     </div>
   );
-}
-
-function useQueryValue() {
-  const [hasAdmin, setHasAdmin] = useState(true);
-  useEffect(() => {
-    let active = true;
-    getAdminSetupStatus()
-      .then((r) => active && setHasAdmin(r.hasAdmin))
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, []);
-  return hasAdmin;
 }
