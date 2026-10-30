@@ -51,7 +51,7 @@ export const OPERATING_COUNTRIES: OperatingCountry[] = [
 export function GlobalPresenceGlobe() {
   const [rotationLon, setRotationLon] = useState<number>(0);
   const [isRotating, setIsRotating] = useState<boolean>(true);
-  const [activeCountry, setActiveCountry] = useState<OperatingCountry>(OPERATING_COUNTRIES[0]);
+  const [activeCountry, setActiveCountry] = useState<OperatingCountry>(OPERATING_COUNTRIES[0]!);
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const startDragX = useRef<number>(0);
@@ -83,13 +83,13 @@ export function GlobalPresenceGlobe() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true);
-    startDragX.current = e.touches[0].clientX;
+    startDragX.current = e.touches[0]!.clientX;
     startRotation.current = rotationLon;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
-    const deltaX = e.touches[0].clientX - startDragX.current;
+    const deltaX = e.touches[0]!.clientX - startDragX.current;
     setRotationLon((startRotation.current - deltaX * 0.45) % 360);
   };
 

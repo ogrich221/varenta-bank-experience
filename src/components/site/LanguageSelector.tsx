@@ -38,7 +38,7 @@ export const LANGUAGES: Language[] = [
 
 export function LanguageSelector({ variant = "header" }: { variant?: "header" | "standalone" }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState<Language>(LANGUAGES[0]);
+  const [selectedLang, setSelectedLang] = useState<Language>(LANGUAGES[0]!);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -118,7 +118,7 @@ export function LanguageSelector({ variant = "header" }: { variant?: "header" | 
         </span>
         <span className="text-base leading-none">{selectedLang.flag}</span>
         <span className="hidden text-foreground font-medium sm:inline">{selectedLang.name}</span>
-        <span className="text-foreground font-medium sm:hidden">{selectedLang.code.split("-")[0].toUpperCase()}</span>
+        <span className="text-foreground font-medium sm:hidden">{selectedLang.code.split("-")[0]!.toUpperCase()}</span>
         <ChevronDown
           className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
