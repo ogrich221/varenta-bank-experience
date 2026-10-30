@@ -36,7 +36,7 @@ export function useRows<T extends Tbl>(table: T, select = "*", orderBy = "create
 export async function audit(action: string, target: string, details?: Record<string, unknown>) {
   const { data } = await supabase.auth.getUser();
   if (!data.user) return;
-  await supabase.from("audit_logs").insert({ actor_id: data.user.id, actor_email: data.user.email, action, target, details: (details ?? null) as never });
+  await supabase.from("audit_logs").insert({ actor_id: data.user.id, actor_email: data.user.email ?? null, action, target, details: (details ?? null) as never });
 }
 
 /** Update one row, write an audit entry and refresh lists. */

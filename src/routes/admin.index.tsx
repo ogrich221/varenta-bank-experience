@@ -63,7 +63,7 @@ function Overview() {
           <ul className="mt-4 divide-y divide-border">
             {t.filter((x) => x.status === "pending").slice(0, 7).map((x) => (
               <li key={x.id} className="flex items-center justify-between gap-2 py-3">
-                <span className="min-w-0"><span className="block truncate text-sm font-medium">{(x.customers as { full_name: string } | null)?.full_name}</span><span className="text-xs capitalize text-muted-foreground">{x.txn_type} · {date(x.created_at)}</span></span>
+                <span className="min-w-0"><span className="block truncate text-sm font-medium">{(x["customers"] as { full_name: string } | null)?.full_name}</span><span className="text-xs capitalize text-muted-foreground">{x.txn_type} · {date(x.created_at)}</span></span>
                 <span className="text-right"><span className="block font-display text-sm font-semibold">{money(x.amount)}</span><Status value={x.status} /></span>
               </li>
             ))}

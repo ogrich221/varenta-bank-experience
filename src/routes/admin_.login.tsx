@@ -6,7 +6,7 @@ import { adminHead } from "@/lib/admin";
 
 export const Route = createFileRoute("/admin_/login")({
   ssr: false,
-  validateSearch: (s: Record<string, unknown>) => ({ denied: typeof s.denied === "string" ? s.denied : undefined }),
+  validateSearch: (s: Record<string, unknown>): { denied?: string } => (typeof s["denied"] === "string" ? { denied: s["denied"] } : {}),
   head: adminHead("Admin sign in"),
   component: AdminLogin,
 });

@@ -20,7 +20,7 @@ function SettingsPage() {
   async function changePw(e: React.FormEvent) {
     e.preventDefault();
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur } as never);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     await audit("Changed admin password", `user:${user.id}`);
     toast.success("Password updated"); setCur(""); setPw("");
   }

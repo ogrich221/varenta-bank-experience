@@ -32,7 +32,7 @@ export function TxnManager({ type }: { type?: "deposit" | "withdrawal" | "transf
   const sum = (s: string) => all.filter((t) => t.status === s);
   const act = async (t: Txn, s: string) => {
     const { data: u } = await supabase.auth.getUser();
-    upd.mutate({ id: t.id, patch: { status: s, reviewed_by: u.user?.id, reviewed_at: new Date().toISOString() }, label: `Transaction ${t.reference} ${s}` });
+    upd.mutate({ id: t.id, patch: { status: s, reviewed_by: u.user?.id ?? null, reviewed_at: new Date().toISOString() }, label: `Transaction ${t.reference} ${s}` });
   };
 
   return (

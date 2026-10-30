@@ -6,13 +6,13 @@ import { adminHead, date, money, useRows, useUpdate, type Row } from "@/lib/admi
 import { abtn, Confirm, Loading, PageHeader, Panel, SearchBox, Select, Status, Table } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/customers")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: typeof s.q === "string" ? s.q : "" }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => (typeof s["q"] === "string" && s["q"] ? { q: s["q"] } : {}),
   head: adminHead("Customers"),
   component: Customers,
 });
 
 function Customers() {
-  const { q } = Route.useSearch();
+  const { q = "" } = Route.useSearch();
   const navigate = useNavigate({ from: "/admin/customers" });
   const [status, setStatus] = useState("all");
   const [open, setOpen] = useState<Row<"customers"> | null>(null);
@@ -32,7 +32,7 @@ function Customers() {
       <PageHeader title="Customers" desc={`${customers.data?.length ?? 0} customers across all branches.`} />
       <Panel>
         <div className="mb-4 flex flex-wrap gap-2">
-          <SearchBox value={q} onChange={(v) => navigate({ search: { q: v }, replace: true })} placeholder="Search name, email, country…" />
+          <SearchBox value={q} onChange={(v) => navigate({ search: v ? { q: v } : {}, replace: true })} placeholder="Search name, email, country…" />
           <Select label="Statuses" value={status} onChange={setStatus} options={["all", "active", "frozen", "closed"]} />
         </div>
         {customers.isLoading ? <Loading /> : (

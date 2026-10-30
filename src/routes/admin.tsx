@@ -101,7 +101,7 @@ function TopBar() {
   return (
     <header className="glass sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border px-3 sm:px-6">
       <SidebarTrigger aria-label="Toggle menu" />
-      <form className="relative flex-1 max-w-md" onSubmit={(e) => { e.preventDefault(); navigate({ to: "/admin/customers", search: { q } }); }}>
+      <form className="relative flex-1 max-w-md" onSubmit={(e) => { e.preventDefault(); navigate({ to: "/admin/customers", search: q ? { q } : {} }); }}>
         <label htmlFor="admin-search" className="sr-only">Search customers</label>
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
         <input id="admin-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search customers…"
