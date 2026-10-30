@@ -3,7 +3,7 @@ import { useState } from "react";
 import { adminHead, money, useRows, useUpdate } from "@/lib/admin";
 import { Confirm, Loading, PageHeader, Panel, Select, Status, Table } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/loans")({ head: adminHead("Loans"), component: Loans });
+export const Route = createFileRoute("/admin/loans")({ staticData: { sitemap: false }, head: adminHead("Loans"), component: Loans });
 
 type L = { id: string; amount: number; interest_rate: number; term_months: number; purpose: string | null; status: string; created_at: string; customers: { full_name: string } | null };
 
