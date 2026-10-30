@@ -175,7 +175,7 @@ function Index() {
             ].map((b) => (
               <figure key={b.t} className="glass group relative overflow-hidden rounded-[2rem]">
                 <img src={b.src} alt={b.alt} width={b.w} height={b.h} loading="lazy" className="h-[28rem] w-full object-cover transition-transform duration-700 group-hover:scale-105 sm:h-[34rem]" />
-                <figcaption className="glass absolute inset-x-4 bottom-4 rounded-2xl p-5">
+                <figcaption className="glass-dark absolute inset-x-4 bottom-4 rounded-2xl p-5">
                   <h3 className="font-semibold">{b.t}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{b.d}</p>
                 </figcaption>
