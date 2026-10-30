@@ -37,6 +37,14 @@ function OverviewPage() {
 
   const peak = Math.max(1, ...daily.map((d) => Math.max(d.deposits, d.withdrawals)));
 
+  const flow: { label: string; value: number; Icon: typeof Users }[] = [
+    { label: "Deposits", value: month.deposits, Icon: TrendingUp },
+    { label: "Withdrawals", value: month.withdrawals, Icon: TrendingDown },
+    { label: "Transfers", value: month.transfers, Icon: ArrowUpRight },
+    { label: "Payments", value: month.payments, Icon: CreditCard },
+  ];
+
+
   return (
     <AdminShell
       title="Bank overview"
@@ -45,7 +53,7 @@ function OverviewPage() {
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Assets under management"
-          value={<Money value={totals.assets} /> as unknown as string}
+          value={<Money value={totals.assets} />}
           hint={`${totals.accounts} active and frozen accounts`}
           Icon={Wallet}
           tone="good"
@@ -102,21 +110,17 @@ function OverviewPage() {
             ))}
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3 border-t border-border/50 pt-4 sm:grid-cols-4">
-            {[
-              ["Deposits", month.deposits, TrendingUp],
-              ["Withdrawals", month.withdrawals, TrendingDown],
-              ["Transfers", month.transfers, ArrowUpRight],
-              ["Payments", month.payments, CreditCard],
-            ].map(([label, value, Icon]) => (
-              <div key={label as string}>
+            {flow.map(({ label, value, Icon }) => (
+              <div key={label}>
                 <span className="flex items-center gap-1.5 text-[11px] uppercase tracking-wide text-muted-foreground">
-                  {Icon ? <(Icon as typeof Users) className="h-3 w-3" /> : null}
-                  {label as string}
+                  <Icon className="h-3 w-3" />
+                  {label}
                 </span>
-                <Money value={value as number} className="mt-1 block font-display text-lg font-bold" />
+                <Money value={value} className="mt-1 block font-display text-lg font-bold" />
               </div>
             ))}
           </div>
+
         </section>
 
         <section className="glass rounded-3xl p-5 lg:col-span-2">
