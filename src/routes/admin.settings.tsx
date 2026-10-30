@@ -38,7 +38,7 @@ function SettingsPage() {
           <h2 className="flex items-center gap-2 font-semibold"><UserRound className="h-4 w-4 text-primary" />Profile</h2>
           <div className="mt-4 flex items-center gap-3">
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-primary font-bold text-primary-foreground shadow-glow">CEO</span>
-            <div><p className="font-semibold">CEO</p><p className="text-sm text-muted-foreground">{user.email}</p><p className="text-xs text-muted-foreground">Last sign-in {user.last_sign_in_at ? date(user.last_sign_in_at) : "—"}</p></div>
+            <div><p className="font-semibold">CEO</p><p className="text-sm text-muted-foreground">{user.email}</p><p className="text-xs text-muted-foreground">Last sign-in {"last_sign_in_at" in user && user.last_sign_in_at ? date(user.last_sign_in_at) : "—"}</p></div>
           </div>
         </Panel>
         <Panel>

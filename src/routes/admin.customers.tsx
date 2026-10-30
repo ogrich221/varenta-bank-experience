@@ -1,3 +1,4 @@
+import { toAdminView, toAccountType } from "@/lib/admin-view";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
@@ -20,12 +21,13 @@ function CustomersPage() {
   const { q = "" } = Route.useSearch();
   const navigate = useNavigate({ from: "/admin/customers" });
   const {
-    managedUsers,
+    managedUsers: rawManagedUsers,
     clearAllUsers,
     adminCreditUser,
     adminDebitUser,
     formatCurrency,
   } = useBanking();
+  const managedUsers = useMemo(() => rawManagedUsers.map(toAdminView), [rawManagedUsers]);
 
   // Search & Filter
   const [filterQuery, setFilterQuery] = useState(q);
@@ -81,10 +83,10 @@ function CustomersPage() {
     try {
       const parsedDate = customDate ? new Date(customDate).toISOString() : new Date().toISOString();
       if (actionType === "credit") {
-        adminCreditUser(selectedUser.id, num, accountType, narration.trim(), parsedDate);
+        adminCreditUser({ userId: selectedUser.id, accountType: toAccountType(accountType), amount: num, date: parsedDate, narration: narration.trim() });
         toast.success(`Successfully credited ${formatCurrency(num)} to ${selectedUser.name}`);
       } else {
-        adminDebitUser(selectedUser.id, num, accountType, narration.trim(), parsedDate);
+        adminDebitUser({ userId: selectedUser.id, accountType: toAccountType(accountType), amount: num, date: parsedDate, narration: narration.trim() });
         toast.success(`Successfully debited ${formatCurrency(num)} from ${selectedUser.name}`);
       }
       setAdjustModalOpen(false);

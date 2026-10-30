@@ -1,3 +1,4 @@
+import { toAdminView, toAccountType } from "@/lib/admin-view";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import {
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/admin/")({
 
 function AdminCommandCenter() {
   const {
-    managedUsers,
+    managedUsers: rawManagedUsers,
     clearAllUsers,
     adminCreditUser,
     adminDebitUser,
@@ -25,6 +26,7 @@ function AdminCommandCenter() {
     totalBalance,
     formatCurrency,
   } = useBanking();
+  const managedUsers = useMemo(() => rawManagedUsers.map(toAdminView), [rawManagedUsers]);
 
   // Credit / Debit Terminal State
   const [selectedUserId, setSelectedUserId] = useState<string>(managedUsers[0]?.id || "");
@@ -101,10 +103,10 @@ function AdminCommandCenter() {
     try {
       const parsedDate = customDate ? new Date(customDate).toISOString() : new Date().toISOString();
       if (actionType === "credit") {
-        adminCreditUser(selectedUserId, num, accountType, narration.trim(), parsedDate);
+        adminCreditUser({ userId: selectedUserId, accountType: toAccountType(accountType), amount: num, date: parsedDate, narration: narration.trim() });
         toast.success(`Successfully credited ${formatCurrency(num)} to user (${accountType})`);
       } else {
-        adminDebitUser(selectedUserId, num, accountType, narration.trim(), parsedDate);
+        adminDebitUser({ userId: selectedUserId, accountType: toAccountType(accountType), amount: num, date: parsedDate, narration: narration.trim() });
         toast.success(`Successfully debited ${formatCurrency(num)} from user (${accountType})`);
       }
       setAmountStr("");
@@ -521,12 +523,12 @@ function AdminCommandCenter() {
                         <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2">
                           <span
                             className={`text-base font-black font-display ${
-                              t.type === "Deposit" || t.type === "Incoming"
+                              t.type === "Deposit" || t.type === "Admin Credit"
                                 ? "text-emerald-400"
                                 : "text-white"
                             }`}
                           >
-                            {t.type === "Deposit" || t.type === "Incoming" ? "+" : "-"}
+                            {t.type === "Deposit" || t.type === "Admin Credit" ? "+" : "-"}
                             {formatCurrency(t.amount, t.currency)}
                           </span>
 
