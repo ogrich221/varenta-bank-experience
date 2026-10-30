@@ -4,6 +4,8 @@ import {
   ShieldCheck, Zap, Smartphone, Headphones, Plus, Receipt, Star,
 } from "lucide-react";
 import hero from "@/assets/hero-bank.jpg";
+import teller from "@/assets/branch-teller.jpg";
+import lobby from "@/assets/branch-lobby.jpg";
 import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
 
 export const Route = createFileRoute("/")({
@@ -51,7 +53,7 @@ function Index() {
       {/* Hero */}
       <section className="relative isolate min-h-[100svh] overflow-hidden" aria-labelledby="hero-title">
         <img src={hero} alt="Varenta Bank headquarters, a modern glass building with the Varenta logo at sunset" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
-        <div className="absolute inset-0 -z-10 bg-gradient-hero max-lg:bg-background/75" />
+        <div className="absolute inset-0 -z-10 bg-gradient-hero max-lg:bg-background/80" />
         <div className="mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-6 pb-16 pt-32">
           <div className="max-w-xl animate-rise">
             <span className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-accent-foreground">
@@ -127,7 +129,7 @@ function Index() {
       </section>
 
       {/* Services */}
-      <section className="bg-cream px-6 py-24" aria-labelledby="svc-title">
+      <section className="px-6 py-24" aria-labelledby="svc-title">
         <div className="mx-auto max-w-7xl">
           <h2 id="svc-title" className="text-3xl font-bold sm:text-4xl">Services for every goal</h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -161,8 +163,30 @@ function Index() {
         </div>
       </section>
 
+      {/* Branches */}
+      <section className="px-6 py-24" aria-labelledby="br-title">
+        <div className="mx-auto max-w-7xl">
+          <h2 id="br-title" className="text-3xl font-bold sm:text-4xl">Visit a <span className="text-gradient">Varenta branch</span></h2>
+          <p className="mt-3 max-w-xl text-muted-foreground">Prefer face to face? Our teams are ready to help in person.</p>
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {[
+              { src: teller, w: 736, h: 992, t: "Personal service", d: "Friendly tellers for deposits, cards and advice.", alt: "Varenta Bank teller helping at a counter with the Varenta logo behind her" },
+              { src: lobby, w: 736, h: 1312, t: "Modern branches", d: "Bright, welcoming lobbies with short queues.", alt: "Customers queueing in a modern Varenta Bank branch lobby under the Varenta sign" },
+            ].map((b) => (
+              <figure key={b.t} className="glass group relative overflow-hidden rounded-[2rem]">
+                <img src={b.src} alt={b.alt} width={b.w} height={b.h} loading="lazy" className="h-[28rem] w-full object-cover transition-transform duration-700 group-hover:scale-105 sm:h-[34rem]" />
+                <figcaption className="glass absolute inset-x-4 bottom-4 rounded-2xl p-5">
+                  <h3 className="font-semibold">{b.t}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{b.d}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
-      <section className="relative overflow-hidden bg-ink px-6 py-24 text-cream" aria-labelledby="rev-title">
+      <section className="relative overflow-hidden bg-ink px-6 py-24" aria-labelledby="rev-title">
         <div className="pointer-events-none absolute -right-20 top-0 h-96 w-96 rounded-full bg-gradient-primary opacity-30 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">
           <h2 id="rev-title" className="text-3xl font-bold sm:text-4xl">Loved by our customers</h2>
