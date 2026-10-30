@@ -78,7 +78,7 @@ function AuditPage() {
                 : "No entries match this search."}
             </EmptyState>
           ) : (
-            <table className="w-full min-w-[52rem] text-left text-sm">
+            <table className="w-full min-w-[60rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
               <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="pb-2 font-semibold">When</th>
