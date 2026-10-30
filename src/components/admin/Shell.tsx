@@ -217,7 +217,7 @@ export function StatCard({
   tone = "default",
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   hint?: string;
   Icon: typeof Users;
   tone?: "default" | "warn" | "good";
