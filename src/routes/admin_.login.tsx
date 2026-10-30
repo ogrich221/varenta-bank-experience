@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminHead } from "@/lib/admin";
+import { PasswordField } from "@/components/site/PasswordField";
 
 export const Route = createFileRoute("/admin_/login")({
   staticData: { sitemap: false },
@@ -49,7 +50,7 @@ function AdminLogin() {
         <p className="mt-1 text-sm text-muted-foreground">{mode === "in" ? "Sign in to the administration console." : "Create the administrator account."}</p>
         <div className="mt-6 space-y-3">
           <label className="block text-sm font-medium">Username or email<input type="text" required autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={`${input} mt-1`} /></label>
-          <label className="block text-sm font-medium">Password<input type="password" required minLength={8} autoComplete={mode === "in" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} className={`${input} mt-1`} /></label>
+          <label className="block text-sm font-medium">Password<PasswordField required minLength={8} autoComplete={mode === "in" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} className={`${input} mt-1`} /></label>
         </div>
         {msg && <p role="alert" className="mt-4 rounded-xl border border-primary/30 bg-primary/10 p-3 text-sm">{msg}</p>}
         <button disabled={busy} className="mt-6 h-11 w-full rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-glow transition hover:brightness-105 disabled:opacity-60">

@@ -6,6 +6,7 @@ import {
   Sparkles, Check, Globe, HelpCircle, Eye, EyeOff
 } from "lucide-react";
 import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
+import { PasswordField } from "@/components/site/PasswordField";
 import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/open-account")({
@@ -582,6 +583,8 @@ export function OpenAccountPage() {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            aria-pressed={showPassword}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                           >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -591,18 +594,16 @@ export function OpenAccountPage() {
 
                       <div>
                         <label className="block text-xs font-semibold text-foreground mb-1">Confirm Password *</label>
-                        <div className="relative">
-                          <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            name="confirmPassword"
-                            required
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="Repeat password"
-                            className="w-full rounded-2xl border border-border/60 bg-background/70 pl-10 pr-4 py-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                          />
-                        </div>
+                        <PasswordField
+                          icon={<Lock className="h-4 w-4" />}
+                          name="confirmPassword"
+                          required
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          placeholder="Repeat password"
+                          revealWord="confirm password"
+                          className="rounded-2xl border border-border/60 bg-background/70 py-2.5 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        />
                       </div>
                     </div>
 

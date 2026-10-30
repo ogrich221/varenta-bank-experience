@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useBanking } from "@/lib/banking-context";
 import { btnPrimary } from "@/components/site/Layout";
+import { PasswordField } from "@/components/site/PasswordField";
 import {
   ELIGIBLE_INTERNATIONAL_COUNTRIES,
   BILL_PROVIDERS,
@@ -930,14 +931,14 @@ export function DashboardPage() {
 
                       <div>
                         <label className="block font-semibold text-foreground mb-1">Transaction PIN *</label>
-                        <input
-                          type="password"
+                        <PasswordField
                           maxLength={4}
                           required
                           value={domForm.pin}
                           onChange={(e) => setDomForm({ ...domForm, pin: e.target.value })}
                           placeholder="4-digit PIN"
-                          className="w-full rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 font-mono text-center tracking-widest text-foreground focus:border-primary focus:outline-none"
+                          revealWord="PIN"
+                          className="rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 font-mono text-center tracking-widest text-foreground focus:border-primary focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1086,14 +1087,14 @@ export function DashboardPage() {
 
                       <div>
                         <label className="block font-semibold text-foreground mb-1">Transaction PIN *</label>
-                        <input
-                          type="password"
+                        <PasswordField
                           maxLength={4}
                           required
                           value={intlForm.pin}
                           onChange={(e) => setIntlForm({ ...intlForm, pin: e.target.value })}
                           placeholder="4-digit PIN"
-                          className="w-full rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 font-mono text-center tracking-widest text-foreground focus:border-primary focus:outline-none"
+                          revealWord="PIN"
+                          className="rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 font-mono text-center tracking-widest text-foreground focus:border-primary focus:outline-none"
                         />
                       </div>
                     </div>
