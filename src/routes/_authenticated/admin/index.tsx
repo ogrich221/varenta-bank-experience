@@ -164,7 +164,7 @@ function OverviewPage() {
           </Link>
         </div>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[44rem] text-left text-sm">
+          <table className="w-full min-w-[56rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
             <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="pb-2 font-semibold">Customer</th>

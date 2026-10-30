@@ -137,7 +137,7 @@ function TransactionsPage() {
           {rows.length === 0 ? (
             <EmptyState>No movements match this filter.</EmptyState>
           ) : (
-            <table className="w-full min-w-[62rem] text-left text-sm">
+            <table className="w-full min-w-[76rem] text-left text-sm [&_th]:pr-6 [&_td]:pr-6 [&_th:last-child]:pr-0 [&_td:last-child]:pr-0">
               <thead className="text-[11px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="pb-2 font-semibold">Customer</th>
