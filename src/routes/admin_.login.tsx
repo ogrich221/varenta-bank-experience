@@ -26,7 +26,7 @@ function AdminLogin() {
     e.preventDefault();
     setBusy(true); setMsg(null);
     if (mode === "in") {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: email.includes("@") ? email.trim() : `${email.trim().toLowerCase()}@varentabank.com`, password });
       setBusy(false);
       if (error) return setMsg(error.message);
       navigate({ to: "/admin" });
@@ -47,7 +47,7 @@ function AdminLogin() {
         <h1 className="mt-5 text-2xl font-bold">Varenta Admin</h1>
         <p className="mt-1 text-sm text-muted-foreground">{mode === "in" ? "Sign in to the administration console." : "Create the administrator account."}</p>
         <div className="mt-6 space-y-3">
-          <label className="block text-sm font-medium">Email<input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={`${input} mt-1`} /></label>
+          <label className="block text-sm font-medium">Username or email<input type="text" required autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} className={`${input} mt-1`} /></label>
           <label className="block text-sm font-medium">Password<input type="password" required minLength={8} autoComplete={mode === "in" ? "current-password" : "new-password"} value={password} onChange={(e) => setPassword(e.target.value)} className={`${input} mt-1`} /></label>
         </div>
         {msg && <p role="alert" className="mt-4 rounded-xl border border-primary/30 bg-primary/10 p-3 text-sm">{msg}</p>}
