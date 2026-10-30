@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { adminHead } from "@/lib/admin";
 
 export const Route = createFileRoute("/admin_/login")({
+  staticData: { sitemap: false },
   ssr: false,
   validateSearch: (s: Record<string, unknown>): { denied?: string } => (typeof s["denied"] === "string" ? { denied: s["denied"] } : {}),
   head: adminHead("Admin sign in"),

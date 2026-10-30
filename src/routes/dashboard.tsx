@@ -20,6 +20,7 @@ import {
 
 
 export const Route = createFileRoute("/dashboard")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Client Dashboard — Varenta Bank" },

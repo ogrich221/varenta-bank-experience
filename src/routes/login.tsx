@@ -5,6 +5,7 @@ import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
 import { useBanking } from "@/lib/banking-context";
 
 export const Route = createFileRoute("/login")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Sign In — Varenta Bank Secure Client Portal" },

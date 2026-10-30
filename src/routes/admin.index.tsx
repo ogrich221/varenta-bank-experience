@@ -11,6 +11,7 @@ import { useBanking } from "@/lib/banking-context";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/admin/")({
+  staticData: { sitemap: false },
   component: AdminCommandCenter,
 });
 

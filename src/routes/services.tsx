@@ -8,6 +8,7 @@ import {
 import { PageShell, btnPrimary, btnGlass } from "@/components/site/Layout";
 
 export const Route = createFileRoute("/services")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Institutional & Personal Banking Services — Varenta Bank" },
