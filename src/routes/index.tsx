@@ -135,17 +135,254 @@ function Index() {
       </section>
 
       {/* Services */}
-      <section className="px-6 py-24" aria-labelledby="svc-title">
+      <section className="relative px-6 py-24" aria-labelledby="svc-title">
+        <div className="pointer-events-none absolute -right-20 top-1/3 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
         <div className="mx-auto max-w-7xl">
-          <h2 id="svc-title" className="text-3xl font-bold sm:text-4xl">Services for every goal</h2>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {services.map(({ i: I, t, d }) => (
-              <article key={t} className="glass group rounded-3xl p-6 transition-all hover:-translate-y-1 hover:shadow-glow">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground transition-transform group-hover:rotate-6"><I className="h-5 w-5" aria-hidden /></span>
-                <h3 className="mt-5 text-lg font-semibold">{t}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{d}</p>
-              </article>
-            ))}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+                Comprehensive Financial Architecture
+              </span>
+              <h2 id="svc-title" className="mt-3 text-3xl font-bold sm:text-5xl">
+                Services engineered for <span className="text-gradient">maximum growth</span>
+              </h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground text-sm sm:text-base">
+                Whether safeguarding wealth, executing cross-border payments across 21 jurisdictions, or accessing institutional credit, Varenta delivers unmatched speed and transparency.
+              </p>
+            </div>
+            <Link to="/services" className={`${btnGlass} self-start md:self-auto gap-2`}>
+              Explore All Services <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* 1. High-Yield Savings */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <PiggyBank className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold text-primary font-mono">
+                    5.15% APY
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">High-Yield Treasury & Savings</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Earn more than 10x the national bank average with zero account minimums, daily compounded interest, and unlimited transfers.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Up to $2.5M FDIC sweep insurance
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Automated smart round-ups & sub-vaults
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Instant liquidity with 0 lock-up penalties
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Traditional: 0.05%</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
+
+            {/* 2. Global Borderless Transfers */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <Send className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1 text-xs font-bold text-sky-500 font-mono">
+                    0% FX SPREAD
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">Global Borderless Transfers</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Send, receive, and hold 28 currencies with domestic bank coordinates across 21 authorized operating nations.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    T+0 real-time clearing (FedNow, SEPA, Faster Payments)
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Zero hidden foreign exchange markups
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Dedicated multi-currency virtual IBANs
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Speed: Under 15s</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
+
+            {/* 3. Titanium Cards */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <CreditCard className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-500 font-mono">
+                    1.8% CASHBACK
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">World Elite Metal Debit Cards</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Solid tungsten and titanium cards featuring dynamic 360° rotating CVV security and VIP global concierge privileges.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Unlimited 1.8% cash back deposited daily
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Zero foreign transaction fees worldwide
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Biometric authorization & 1-tap instant freeze
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Material: Tungsten</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
+
+            {/* 4. Bespoke Private Lending */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <Landmark className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500 font-mono">
+                    FROM 4.25% APR
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">Bespoke Lending & Credit Lines</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Unlock liquidity without selling long-term holdings. Securities-backed loans, commercial financing, and luxury real estate mortgages.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Instant pre-approval with zero credit score impact
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Zero origination, maintenance, or prepayment fees
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Flexible interest-only payback schedules
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Approval: Under 24h</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
+
+            {/* 5. Guided Portfolios & Wealth Management */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <TrendingUp className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 text-xs font-bold text-purple-400 font-mono">
+                    AUTO REBALANCE
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">Algorithmic Wealth & Portfolios</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  Institutional portfolio strategies accessible at your fingertips. Automated daily rebalancing, tax-loss harvesting, and dedicated advisors.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Global equity indexes, sovereign bonds & private debt
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Tax-loss harvesting saving an average 1.4% annually
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Direct phone desk to Chartered Financial Analysts (CFA)
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Advisory fee: 0.25%</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
+
+            {/* 6. Institutional Multi-Jurisdiction Security */}
+            <article className="glass group relative overflow-hidden rounded-[2rem] p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-glow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-primary text-primary-foreground shadow-md transition-transform group-hover:scale-110">
+                    <ShieldCheck className="h-6 w-6" aria-hidden />
+                  </span>
+                  <span className="rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-500 font-mono">
+                    SOC2 TYPE II
+                  </span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">Institutional Solvency & Custody</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  100% full-reserve banking architecture. Your client funds are segregated in tier-1 central banks, never leveraged for high-risk trading.
+                </p>
+                <ul className="mt-5 space-y-2 text-xs text-foreground/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Real-time cryptographic proof-of-reserves
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    256-bit quantum-resistant hardware encryption
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Regulated across 21 top-tier global authorities
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
+                <span className="text-xs font-mono text-muted-foreground">Reserve ratio: 100%</span>
+                <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </article>
           </div>
         </div>
       </section>
