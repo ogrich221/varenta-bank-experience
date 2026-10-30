@@ -9,6 +9,7 @@ import {
   Wifi, Droplets, Tv, Check, X, Shield, Key, ShieldAlert
 } from "lucide-react";
 import { useBanking } from "@/lib/banking-context";
+import { btnPrimary } from "@/components/site/Layout";
 import {
   ELIGIBLE_INTERNATIONAL_COUNTRIES,
   BILL_PROVIDERS,
@@ -16,6 +17,7 @@ import {
   Transaction,
   Beneficiary
 } from "@/lib/banking-store";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -93,7 +95,7 @@ export function DashboardPage() {
   // International Transfer Form (Eligible countries outside Africa)
   const [intlForm, setIntlForm] = useState({
     recipientName: "",
-    country: ELIGIBLE_INTERNATIONAL_COUNTRIES[0].name,
+    country: ELIGIBLE_INTERNATIONAL_COUNTRIES[0]?.name ?? "",
     bankName: "Barclays Bank UK PLC",
     swiftBic: "BARCGB22",
     iban: "",
@@ -113,7 +115,7 @@ export function DashboardPage() {
 
   // Bill Payment State
   const [billCategory, setBillCategory] = useState<keyof typeof BILL_PROVIDERS>("Electricity");
-  const [billProvider, setBillProvider] = useState(BILL_PROVIDERS.Electricity[0].name);
+  const [billProvider, setBillProvider] = useState(BILL_PROVIDERS.Electricity[0]?.name ?? "");
   const [billAccount, setBillAccount] = useState("");
   const [billAmount, setBillAmount] = useState("");
   const [billReceipt, setBillReceipt] = useState<string | null>(null);
@@ -287,6 +289,17 @@ export function DashboardPage() {
 
   const currentAcc = accounts.find((a) => a.type === "Current Account") || accounts[0];
   const savingsAcc = accounts.find((a) => a.type === "Savings Account") || accounts[1];
+
+  if (!currentAcc || !savingsAcc) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background px-6 text-center">
+        <p className="max-w-sm text-sm text-muted-foreground">
+          No accounts are open yet. Open an account to see your dashboard.
+        </p>
+      </div>
+    );
+  }
+
 
   const convResult = convertCurrency(convAmount, convFrom, convTo);
 
@@ -1255,7 +1268,7 @@ export function DashboardPage() {
                         type="button"
                         onClick={() => {
                           setBillCategory(cat);
-                          setBillProvider(BILL_PROVIDERS[cat][0].name);
+                          setBillProvider(BILL_PROVIDERS[cat]?.[0]?.name ?? "");
                         }}
                         className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                           isSelected
