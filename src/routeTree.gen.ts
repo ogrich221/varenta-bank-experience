@@ -19,7 +19,10 @@ import { Route as OpenAccountRouteImport } from './routes/open-account'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
+import { Route as AuthenticatedAdminLoansRouteImport } from './routes/_authenticated/admin/loans'
+import { Route as AuthenticatedAdminSupportRouteImport } from './routes/_authenticated/admin/support'
 import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin/transactions'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,10 +74,26 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminCustomersRoute =
   AuthenticatedAdminCustomersRouteImport.update({
     id: '/admin/customers',
     path: '/admin/customers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminLoansRoute = AuthenticatedAdminLoansRouteImport.update({
+  id: '/admin/loans',
+  path: '/admin/loans',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminSupportRoute =
+  AuthenticatedAdminSupportRouteImport.update({
+    id: '/admin/support',
+    path: '/admin/support',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAdminTransactionsRoute =
@@ -93,7 +112,10 @@ export interface FileRoutesByFullPath {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/loans': typeof AuthenticatedAdminLoansRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -106,7 +128,10 @@ export interface FileRoutesByTo {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/loans': typeof AuthenticatedAdminLoansRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -121,7 +146,10 @@ export interface FileRoutesById {
   '/open-account': typeof OpenAccountRoute
   '/services': typeof ServicesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/loans': typeof AuthenticatedAdminLoansRoute
+  '/_authenticated/admin/support': typeof AuthenticatedAdminSupportRoute
   '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -136,7 +164,10 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/admin/audit'
     | '/admin/customers'
+    | '/admin/loans'
+    | '/admin/support'
     | '/admin/transactions'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -149,7 +180,10 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/admin/audit'
     | '/admin/customers'
+    | '/admin/loans'
+    | '/admin/support'
     | '/admin/transactions'
     | '/admin'
   id:
@@ -163,7 +197,10 @@ export interface FileRouteTypes {
     | '/open-account'
     | '/services'
     | '/admin/login'
+    | '/_authenticated/admin/audit'
     | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/loans'
+    | '/_authenticated/admin/support'
     | '/_authenticated/admin/transactions'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -252,11 +289,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/customers': {
       id: '/_authenticated/admin/customers'
       path: '/admin/customers'
       fullPath: '/admin/customers'
       preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/loans': {
+      id: '/_authenticated/admin/loans'
+      path: '/admin/loans'
+      fullPath: '/admin/loans'
+      preLoaderRoute: typeof AuthenticatedAdminLoansRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/support': {
+      id: '/_authenticated/admin/support'
+      path: '/admin/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AuthenticatedAdminSupportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/transactions': {
@@ -270,13 +328,19 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminLoansRoute: typeof AuthenticatedAdminLoansRoute
+  AuthenticatedAdminSupportRoute: typeof AuthenticatedAdminSupportRoute
   AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+  AuthenticatedAdminLoansRoute: AuthenticatedAdminLoansRoute,
+  AuthenticatedAdminSupportRoute: AuthenticatedAdminSupportRoute,
   AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
