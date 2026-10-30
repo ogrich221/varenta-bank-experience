@@ -74,7 +74,8 @@ function AdminLoginPage() {
     setError(null);
     setNotice(null);
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const login = email.trim().includes("@") ? email.trim() : `${email.trim().toLowerCase()}@varentabank.com`;
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: login, password });
       if (signInError) throw signInError;
 
       const me = await whoAmI();
@@ -158,18 +159,18 @@ function AdminLoginPage() {
           >
             <div>
               <label htmlFor="admin-email" className="mb-1 block text-xs font-semibold">
-                Work email
+                Username or email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
                   id="admin-email"
-                  type="email"
+                  type="text"
                   required
-                  autoComplete="email"
+                  autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@varentabank.com"
+                  placeholder="Varenta001"
                   className="w-full rounded-2xl border border-border/60 bg-background/70 py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
