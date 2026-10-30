@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 
 type Client = SupabaseClient<Database>;
-type AuditDetails = Database["public"]["Tables"]["audit_logs"]["Insert"]["details"];
+
 
 const TXN_STATUSES = ["pending", "approved", "completed", "rejected"] as const;
 const LOAN_STATUSES = ["pending", "approved", "active", "repaid", "rejected"] as const;
@@ -42,7 +42,8 @@ async function recordAudit(
     actor_email: email || null,
     action,
     target,
-    details: (details === undefined ? null : details) as AuditDetails,
+    details: (details ?? null) as Json,
+
   });
   // A failed audit write must not fail the action the admin just took.
   if (error) console.error("[audit] could not record:", error.message);
@@ -459,9 +460,10 @@ export type AuditRow = {
   actor_email: string | null;
   action: string;
   target: string | null;
-  details: unknown;
+  details: Json;
   created_at: string;
 };
+
 
 export const getAuditLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
