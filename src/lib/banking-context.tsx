@@ -32,6 +32,28 @@ interface BankingContextType {
   clearAllUsers: () => void;
   switchActiveUser: (userId: string) => void;
   registerNewUser: (profile: Omit<UserProfile, "id">, kycSelfie?: string) => ManagedUser;
+  adminCreateUser: (params: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address?: string;
+    country?: string;
+    nationality?: string;
+    occupation?: string;
+    dob?: string;
+    gender?: string;
+    preferredCurrency?: string;
+    accountType?: "Current Account" | "Savings Account";
+    tier?: "World Elite" | "Platinum" | "Private Client";
+    status?: "Active" | "Verified" | "Pending KYC" | "Suspended";
+    approvalStatus?: "Approved" | "Pending Approval" | "Declined" | "Suspended";
+    initialCheckingBalance?: number;
+    initialSavingsBalance?: number;
+    openingNarration?: string;
+    profilePic?: string;
+  }) => ManagedUser;
   adminApproveUser: (userId: string) => void;
   adminDeclineUser: (userId: string) => void;
   adminUpdateUserProfile: (
@@ -294,6 +316,145 @@ export function BankingProvider({ children }: { children: ReactNode }) {
 
     setManagedUsers((prev) => [newUser, ...prev]);
     setActiveUserId(newId);
+    return newUser;
+  };
+
+  // ADMIN CREATE USER (Permit admin to directly create and provision clients)
+  const adminCreateUser = (params: {
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address?: string;
+    country?: string;
+    nationality?: string;
+    occupation?: string;
+    dob?: string;
+    gender?: string;
+    preferredCurrency?: string;
+    accountType?: "Current Account" | "Savings Account";
+    tier?: "World Elite" | "Platinum" | "Private Client";
+    status?: "Active" | "Verified" | "Pending KYC" | "Suspended";
+    approvalStatus?: "Approved" | "Pending Approval" | "Declined" | "Suspended";
+    initialCheckingBalance?: number;
+    initialSavingsBalance?: number;
+    openingNarration?: string;
+    profilePic?: string;
+  }): ManagedUser => {
+    const newId = `USR-${Math.floor(100000 + Math.random() * 900000)}`;
+    const accNum1 = `VB-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-01`;
+    const accNum2 = `VB-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}-02`;
+    const now = new Date().toISOString().replace("T", " ").substring(0, 16);
+    const currency = params.preferredCurrency || "USD";
+    const initChecking = Number((params.initialCheckingBalance || 0).toFixed(2));
+    const initSavings = Number((params.initialSavingsBalance || 0).toFixed(2));
+
+    const newUser: ManagedUser = {
+      id: newId,
+      profile: {
+        id: newId,
+        firstName: params.firstName.trim(),
+        middleName: params.middleName?.trim() || "",
+        lastName: params.lastName.trim(),
+        dob: params.dob || "1990-01-01",
+        gender: params.gender || "Prefer not to say",
+        nationality: params.nationality || "International",
+        country: params.country || "United States",
+        address: params.address || "1 Wall Street, Financial District",
+        occupation: params.occupation || "Executive",
+        email: params.email.trim(),
+        phone: params.phone.trim(),
+        accountType: params.accountType || "Current Account",
+        preferredCurrency: currency,
+        accountNumber: accNum1,
+        status: params.status || "Active",
+        tier: params.tier || "World Elite",
+        profilePic: params.profilePic || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(params.firstName + " " + params.lastName)}`,
+      },
+      accounts: [
+        {
+          accountNumber: accNum1,
+          type: "Current Account",
+          balance: initChecking,
+          currency,
+          availableBalance: initChecking,
+        },
+        {
+          accountNumber: accNum2,
+          type: "Savings Account",
+          balance: initSavings,
+          currency,
+          availableBalance: initSavings,
+        },
+      ],
+      card: {
+        cardNumber: `4920 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`,
+        cardholderName: `${params.firstName.trim()} ${params.lastName.trim()}`.toUpperCase(),
+        expiryDate: "12/31",
+        cvv: Math.floor(100 + Math.random() * 900).toString(),
+        isFrozen: false,
+        dailyLimit: 50000,
+        contactlessEnabled: true,
+        onlinePaymentsEnabled: true,
+        cardType: "World Elite Titanium",
+      },
+      registeredAt: now,
+      approvalStatus: params.approvalStatus || "Approved",
+      kycSelfie: params.profilePic || "",
+    };
+
+    setManagedUsers((prev) => [newUser, ...prev]);
+
+    // If opening funds were provided, create opening transaction records
+    if (initChecking > 0) {
+      const openTxn: Transaction = {
+        id: `TXN-${Math.floor(10000000 + Math.random() * 90000000)}`,
+        userId: newId,
+        userName: `${params.firstName} ${params.lastName}`,
+        date: now,
+        type: "Admin Credit",
+        description: params.openingNarration || "Opening Balance — Central Treasury Allocation",
+        recipientOrSender: "Varenta Central Banking Authority",
+        amount: initChecking,
+        currency,
+        status: "Successful",
+        targetAccount: "Current Account",
+        reference: `OPEN-CR-${Math.floor(100000 + Math.random() * 900000)}`,
+        adminNote: "Account Opening Allocation",
+      };
+      setTransactions((prev) => [openTxn, ...prev]);
+    }
+
+    if (initSavings > 0) {
+      const openSavingsTxn: Transaction = {
+        id: `TXN-${Math.floor(10000000 + Math.random() * 90000000)}`,
+        userId: newId,
+        userName: `${params.firstName} ${params.lastName}`,
+        date: now,
+        type: "Admin Credit",
+        description: "Initial Savings Fund Allocation",
+        recipientOrSender: "Varenta Central Banking Authority",
+        amount: initSavings,
+        currency,
+        status: "Successful",
+        targetAccount: "Savings Account",
+        reference: `OPEN-SAV-${Math.floor(100000 + Math.random() * 900000)}`,
+        adminNote: "Account Opening Allocation",
+      };
+      setTransactions((prev) => [openSavingsTxn, ...prev]);
+    }
+
+    setNotifications((prev) => [
+      {
+        id: `notif-${Date.now()}`,
+        title: `New Client Provisioned: ${params.firstName} ${params.lastName} (${newId}) onboarded by Administration.`,
+        time: "Just now",
+        read: false,
+      },
+      ...prev,
+    ]);
+
     return newUser;
   };
 
@@ -972,6 +1133,7 @@ export function BankingProvider({ children }: { children: ReactNode }) {
         clearAllUsers,
         switchActiveUser,
         registerNewUser,
+        adminCreateUser,
         adminApproveUser,
         adminDeclineUser,
         adminUpdateUserProfile,

@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import {
   Users, Search, ShieldCheck, Trash2, PlusCircle, MinusCircle,
   Calendar, FileText, DollarSign, AlertTriangle, ArrowUpDown, Edit3,
-  ExternalLink, Snowflake, Sun, Eye, UserCheck, X, Camera
+  ExternalLink, Snowflake, Sun, Eye, UserPlus, X, Camera, Landmark, Check
 } from "lucide-react";
 import { toast } from "sonner";
 import { useBanking, formatCurrency } from "@/lib/banking-context";
@@ -26,6 +26,7 @@ function CustomersPage() {
     managedUsers,
     clearAllUsers,
     switchActiveUser,
+    adminCreateUser,
     adminCreditUser,
     adminDebitUser,
     adminUpdateUserProfile,
@@ -34,6 +35,31 @@ function CustomersPage() {
   // Search & Filter
   const [filterQuery, setFilterQuery] = useState(q);
   const [statusFilter, setStatusFilter] = useState("all");
+
+  // Create User Modal State
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    country: "United States",
+    nationality: "American",
+    occupation: "Executive",
+    dob: "1990-01-01",
+    gender: "Prefer not to say",
+    preferredCurrency: "USD",
+    accountType: "Current Account" as "Current Account" | "Savings Account",
+    tier: "World Elite" as "World Elite" | "Platinum" | "Private Client",
+    status: "Active" as "Active" | "Verified" | "Pending KYC" | "Suspended",
+    approvalStatus: "Approved" as "Approved" | "Pending Approval" | "Declined" | "Suspended",
+    initialCheckingBalance: "0.00",
+    initialSavingsBalance: "0.00",
+    openingNarration: "Initial Treasury Allocation — Account Opening",
+    profilePic: "",
+  });
 
   // Edit Profile Modal State
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -74,6 +100,73 @@ function CustomersPage() {
       return fullName.includes(needle) || email.includes(needle) || phone.includes(needle) || acc.includes(needle);
     });
   }, [managedUsers, filterQuery, q, statusFilter]);
+
+  // Handle Create User
+  const handleCreateClient = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createForm.firstName.trim() || !createForm.lastName.trim()) {
+      toast.error("First Name and Last Name are required");
+      return;
+    }
+    if (!createForm.email.trim()) {
+      toast.error("Valid Email Address is required");
+      return;
+    }
+
+    try {
+      const newUser = adminCreateUser({
+        firstName: createForm.firstName.trim(),
+        middleName: createForm.middleName.trim(),
+        lastName: createForm.lastName.trim(),
+        email: createForm.email.trim(),
+        phone: createForm.phone.trim() || "+1 (555) 019-2834",
+        address: createForm.address.trim() || "1 Wall Street, Financial District",
+        country: createForm.country,
+        nationality: createForm.nationality,
+        occupation: createForm.occupation,
+        dob: createForm.dob,
+        gender: createForm.gender,
+        preferredCurrency: createForm.preferredCurrency,
+        accountType: createForm.accountType,
+        tier: createForm.tier,
+        status: createForm.status,
+        approvalStatus: createForm.approvalStatus,
+        initialCheckingBalance: parseFloat(createForm.initialCheckingBalance) || 0,
+        initialSavingsBalance: parseFloat(createForm.initialSavingsBalance) || 0,
+        openingNarration: createForm.openingNarration.trim(),
+        profilePic: createForm.profilePic.trim(),
+      });
+
+      toast.success(`Client ${newUser.profile.firstName} ${newUser.profile.lastName} created! Account #${newUser.accounts[0].accountNumber}`);
+      setCreateModalOpen(false);
+
+      // Reset form
+      setCreateForm({
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        country: "United States",
+        nationality: "American",
+        occupation: "Executive",
+        dob: "1990-01-01",
+        gender: "Prefer not to say",
+        preferredCurrency: "USD",
+        accountType: "Current Account",
+        tier: "World Elite",
+        status: "Active",
+        approvalStatus: "Approved",
+        initialCheckingBalance: "0.00",
+        initialSavingsBalance: "0.00",
+        openingNarration: "Initial Treasury Allocation — Account Opening",
+        profilePic: "",
+      });
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to create client");
+    }
+  };
 
   // Open Edit Profile Modal
   const handleOpenEdit = (user: ManagedUser) => {
@@ -206,17 +299,27 @@ function CustomersPage() {
             </span>
           </h1>
           <p className="text-xs text-zinc-400 mt-1">
-            Complete authority to edit user profiles, adjust account balances, manage KYC status, and audit ledgers.
+            Complete authority to create new clients, edit profiles, adjust account balances, and audit accounts.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Create Client Button */}
+          <button
+            onClick={() => setCreateModalOpen(true)}
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:brightness-110 px-4 py-2 text-xs font-bold text-black shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-all active:scale-[0.98]"
+          >
+            <UserPlus className="h-4 w-4" />
+            <span>Create New Client</span>
+          </button>
+
           <Link
             to="/open-account"
-            className="flex items-center gap-2 rounded-xl bg-orange-500 hover:bg-orange-400 px-3.5 py-2 text-xs font-bold text-black shadow-[0_0_15px_rgba(249,115,22,0.3)] transition-all"
+            className="hidden md:flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/10 transition-all"
+            title="Open customer self-serve registration page"
           >
-            <PlusCircle className="h-4 w-4" />
-            <span>Open New Account</span>
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>Self-Serve KYC Form</span>
           </Link>
 
           <button
@@ -267,11 +370,18 @@ function CustomersPage() {
           <div className="py-16 text-center">
             <Users className="mx-auto h-10 w-10 text-zinc-600" />
             <p className="mt-3 text-sm text-zinc-400">No customers found</p>
-            <p className="text-xs text-zinc-600 mt-1">
+            <p className="text-xs text-zinc-600 mt-1 mb-4">
               {managedUsers.length === 0
-                ? "No clients have registered yet. Register a client via Open Account."
+                ? "No clients have registered yet. Provision a new client directly."
                 : "No customers match your search criteria."}
             </p>
+            <button
+              onClick={() => setCreateModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-bold text-black shadow"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Create First Client</span>
+            </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -416,6 +526,277 @@ function CustomersPage() {
           </div>
         )}
       </div>
+
+      {/* CREATE NEW CLIENT MODAL */}
+      <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
+        <DialogContent className="border border-orange-500/30 bg-zinc-950 text-white backdrop-blur-2xl max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white text-lg font-bold">
+              <UserPlus className="h-5 w-5 text-orange-400" />
+              <span>Create & Provision New Bank Client</span>
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400 text-xs">
+              Directly onboard and provision a verified Varenta Bank client with checking & savings accounts, virtual debit card, and optional opening treasury balances.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleCreateClient} className="space-y-4 mt-2 text-xs">
+            {/* Identity details */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">First Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.firstName}
+                  onChange={(e) => setCreateForm({ ...createForm, firstName: e.target.value })}
+                  placeholder="e.g. Marcus"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Middle Name</label>
+                <input
+                  type="text"
+                  value={createForm.middleName}
+                  onChange={(e) => setCreateForm({ ...createForm, middleName: e.target.value })}
+                  placeholder="Optional"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Last Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.lastName}
+                  onChange={(e) => setCreateForm({ ...createForm, lastName: e.target.value })}
+                  placeholder="e.g. Vance"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* Contact details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  value={createForm.email}
+                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                  placeholder="marcus.vance@company.com"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Phone Number</label>
+                <input
+                  type="text"
+                  value={createForm.phone}
+                  onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
+                  placeholder="+1 (555) 392-1082"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* Residential address & Country */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Residential Address</label>
+                <input
+                  type="text"
+                  value={createForm.address}
+                  onChange={(e) => setCreateForm({ ...createForm, address: e.target.value })}
+                  placeholder="742 Evergreen Terrace"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Country of Residence</label>
+                <input
+                  type="text"
+                  value={createForm.country}
+                  onChange={(e) => setCreateForm({ ...createForm, country: e.target.value })}
+                  placeholder="United States"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Nationality</label>
+                <input
+                  type="text"
+                  value={createForm.nationality}
+                  onChange={(e) => setCreateForm({ ...createForm, nationality: e.target.value })}
+                  placeholder="American"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* Demographics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Occupation</label>
+                <input
+                  type="text"
+                  value={createForm.occupation}
+                  onChange={(e) => setCreateForm({ ...createForm, occupation: e.target.value })}
+                  placeholder="Chief Technology Officer"
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Date of Birth</label>
+                <input
+                  type="date"
+                  value={createForm.dob}
+                  onChange={(e) => setCreateForm({ ...createForm, dob: e.target.value })}
+                  className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-orange-500 [color-scheme:dark]"
+                />
+              </div>
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Gender</label>
+                <select
+                  value={createForm.gender}
+                  onChange={(e) => setCreateForm({ ...createForm, gender: e.target.value })}
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Financial Opening Balances Section */}
+            <div className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-orange-400 font-bold text-xs">
+                <Landmark className="h-4 w-4" />
+                <span>Account Currency & Opening Treasury Balances</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Account Currency</label>
+                  <select
+                    value={createForm.preferredCurrency}
+                    onChange={(e) => setCreateForm({ ...createForm, preferredCurrency: e.target.value })}
+                    className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                  >
+                    <option value="USD">USD ($ - US Dollar)</option>
+                    <option value="EUR">EUR (€ - Euro)</option>
+                    <option value="GBP">GBP (£ - British Pound)</option>
+                    <option value="CAD">CAD ($ - Canadian Dollar)</option>
+                    <option value="CHF">CHF (Fr - Swiss Franc)</option>
+                    <option value="AUD">AUD ($ - Australian Dollar)</option>
+                    <option value="JPY">JPY (¥ - Japanese Yen)</option>
+                    <option value="SGD">SGD ($ - Singapore Dollar)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Initial Checking Balance ($)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={createForm.initialCheckingBalance}
+                    onChange={(e) => setCreateForm({ ...createForm, initialCheckingBalance: e.target.value })}
+                    placeholder="0.00"
+                    className="w-full rounded-xl border border-white/15 bg-black/60 px-3 py-2 text-xs font-semibold text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-zinc-300 mb-1">Initial Savings Balance ($)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={createForm.initialSavingsBalance}
+                    onChange={(e) => setCreateForm({ ...createForm, initialSavingsBalance: e.target.value })}
+                    placeholder="0.00"
+                    className="w-full rounded-xl border border-white/15 bg-black/60 px-3 py-2 text-xs font-semibold text-white outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Opening Transaction Narration</label>
+                <input
+                  type="text"
+                  value={createForm.openingNarration}
+                  onChange={(e) => setCreateForm({ ...createForm, openingNarration: e.target.value })}
+                  placeholder="e.g. Initial Treasury Allocation / Opening Grant"
+                  className="w-full rounded-xl border border-white/15 bg-black/60 px-3 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-orange-500"
+                />
+              </div>
+            </div>
+
+            {/* Governance & Tier */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Banking Tier</label>
+                <select
+                  value={createForm.tier}
+                  onChange={(e) => setCreateForm({ ...createForm, tier: e.target.value as any })}
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                >
+                  <option value="World Elite">World Elite Titanium</option>
+                  <option value="Platinum">Platinum Preferred</option>
+                  <option value="Private Client">Private Client Sovereign</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Account Status</label>
+                <select
+                  value={createForm.status}
+                  onChange={(e) => setCreateForm({ ...createForm, status: e.target.value as any })}
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                >
+                  <option value="Active">Active & Operational</option>
+                  <option value="Verified">Verified Elite</option>
+                  <option value="Pending KYC">Pending KYC</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-zinc-300 mb-1">Administrative Approval</label>
+                <select
+                  value={createForm.approvalStatus}
+                  onChange={(e) => setCreateForm({ ...createForm, approvalStatus: e.target.value as any })}
+                  className="w-full rounded-xl border border-white/15 bg-zinc-900 px-3 py-2 text-xs text-white outline-none focus:border-orange-500"
+                >
+                  <option value="Approved">Approved Immediately</option>
+                  <option value="Pending Approval">Pending Approval</option>
+                </select>
+              </div>
+            </div>
+
+            <DialogFooter className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setCreateModalOpen(false)}
+                className="rounded-xl border border-white/10 px-4 py-2 text-xs font-semibold text-zinc-400 hover:bg-white/5"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:brightness-110 px-5 py-2 text-xs font-bold text-black shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+              >
+                <Check className="h-4 w-4 inline mr-1" />
+                Provision Client Account
+              </button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* EDIT USER PROFILE MODAL */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
