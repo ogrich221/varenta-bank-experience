@@ -158,7 +158,7 @@ export function GlobalPresenceGlobe() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            <span>21 Operating Jurisdictions • 0 African Operations</span>
+            <span>21 Operating Jurisdictions • Global Clearing Hubs</span>
           </div>
           <h3 className="mt-2 text-2xl font-bold sm:text-3xl">
             Live <span className="text-gradient">Rotating Global Earth & Branches</span>

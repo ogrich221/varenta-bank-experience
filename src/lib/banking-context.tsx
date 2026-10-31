@@ -117,6 +117,7 @@ interface BankingContextType {
     recipientName: string;
     country: string;
     bankName: string;
+    bankAddress?: string;
     swiftBic: string;
     iban: string;
     currency: string;
@@ -949,6 +950,7 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     recipientName: string;
     country: string;
     bankName: string;
+    bankAddress?: string;
     swiftBic: string;
     iban: string;
     currency: string;
@@ -987,13 +989,17 @@ export function BankingProvider({ children }: { children: ReactNode }) {
       userName: `${user.firstName} ${user.lastName}`,
       date: now,
       type: "International Wire",
-      description: `SWIFT/RTGS to ${params.recipientName} (${params.country})`,
+      description: params.bankAddress
+        ? `SWIFT/RTGS to ${params.recipientName} (${params.bankName}, ${params.bankAddress})`
+        : `SWIFT/RTGS to ${params.recipientName} (${params.country})`,
       recipientOrSender: `${params.recipientName} (${params.bankName} - ${params.country})`,
       amount: -params.amount,
       currency: "USD",
       status: "Pending", // PENDING ADMIN APPROVAL
       reference: `INTL-${Math.floor(100000 + Math.random() * 900000)}`,
-      recipientBank: `${params.bankName} [${params.swiftBic}]`,
+      recipientBank: params.bankAddress
+        ? `${params.bankName}, ${params.bankAddress} [${params.swiftBic}]`
+        : `${params.bankName} [${params.swiftBic}]`,
       recipientAccount: params.iban,
       targetAccount: "Current Account",
       fee: params.fee,

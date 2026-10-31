@@ -1,13 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, useId } from "react";
+import { useState, useId, useRef } from "react";
 import {
   Wallet, Send, ArrowDownLeft, ArrowUpRight, Plus, CreditCard,
   Receipt, TrendingUp, ShieldCheck, Eye, EyeOff, Lock, User,
   Globe, Bell, Settings, LogOut, CheckCircle2, AlertCircle,
   Search, Filter, Download, ChevronRight, ThumbsUp, RefreshCw,
   Phone, Mail, MapPin, Building2, Calendar, Zap, Smartphone,
-  Wifi, Droplets, Tv, Check, X, Shield, Key, ShieldAlert, Clock
+  Wifi, Droplets, Tv, Check, X, Shield, Key, Clock, Camera, Upload
 } from "lucide-react";
+import { toast } from "sonner";
 import { useBanking } from "@/lib/banking-context";
 import { btnPrimary } from "@/components/site/Layout";
 import { PasswordField } from "@/components/site/PasswordField";
@@ -94,11 +95,12 @@ export function DashboardPage() {
   const [domSuccess, setDomSuccess] = useState<Transaction | null>(null);
   const [isTransferringDom, setIsTransferringDom] = useState(false);
 
-  // International Transfer Form (Eligible countries outside Africa)
+  // International Transfer Form (Supported Global Corridors)
   const [intlForm, setIntlForm] = useState({
     recipientName: "",
     country: ELIGIBLE_INTERNATIONAL_COUNTRIES[0]?.name ?? "",
     bankName: "Barclays Bank UK PLC",
+    bankAddress: "1 Churchill Place, Canary Wharf, London E14 5HP, United Kingdom",
     swiftBic: "BARCGB22",
     iban: "",
     currency: "GBP",
@@ -128,10 +130,32 @@ export function DashboardPage() {
   const [txnSearch, setTxnSearch] = useState("");
   const [txnTypeFilter, setTxnTypeFilter] = useState("All");
 
-  // Profile Edit State
+  // Profile Edit State & Photo Upload
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({ ...user });
   const [profileSavedMsg, setProfileSavedMsg] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Profile picture size must be under 5MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (result) {
+        setProfileForm((prev) => ({ ...prev, profilePic: result }));
+        updateProfile({ profilePic: result });
+        toast.success("Profile photo updated successfully!");
+        setProfileSavedMsg("Profile photo updated successfully.");
+        setTimeout(() => setProfileSavedMsg(""), 3000);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // New Beneficiary Form
   const [showAddBen, setShowAddBen] = useState(false);
@@ -206,6 +230,7 @@ export function DashboardPage() {
       recipientName: intlForm.recipientName,
       country: intlForm.country,
       bankName: intlForm.bankName,
+      bankAddress: intlForm.bankAddress,
       swiftBic: intlForm.swiftBic,
       iban: intlForm.iban,
       currency: intlForm.currency,
@@ -327,16 +352,6 @@ export function DashboardPage() {
 
           {/* Right Action Icons: Eye Toggle, Notifications, User Chip */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Quick Admin Portal Link */}
-            <Link
-              to="/admin"
-              className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/20 flex items-center gap-1.5 transition-all shadow-sm"
-              title="Open Treasury & Admin Operations Desk"
-            >
-              <ShieldAlert className="h-3.5 w-3.5" />
-              <span className="hidden md:inline">Admin Desk</span>
-            </Link>
-
             {/* Global Sensitive Information Privacy Toggle (Eye Icon) */}
             <button
               type="button"
@@ -467,14 +482,6 @@ export function DashboardPage() {
                 </button>
               );
             })}
-
-            <Link
-              to="/admin"
-              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-xs font-bold text-primary hover:bg-primary/15 border border-primary/30 bg-primary/5 transition-all mt-3"
-            >
-              <ShieldAlert className="h-4 w-4 shrink-0" />
-              <span>Admin Operations Desk</span>
-            </Link>
           </div>
 
           {/* Quick Security Status Box */}
@@ -841,7 +848,7 @@ export function DashboardPage() {
                   Move Funds <span className="text-gradient">Globally & Locally</span>
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Send domestic ACH/Fedwire payments or execute SWIFT/RTGS international wires to eligible non-African countries.
+                  Send domestic ACH/Fedwire payments or execute SWIFT/RTGS international wires to supported global destinations.
                 </p>
               </div>
 
@@ -978,12 +985,12 @@ export function DashboardPage() {
                   </form>
                 </div>
 
-                {/* 2. INTERNATIONAL TRANSFERS (STRICTLY EXCLUDING ALL AFRICAN COUNTRIES) */}
+                {/* 2. INTERNATIONAL TRANSFERS */}
                 <div className="glass rounded-[2rem] p-6 sm:p-8 border border-white/20 shadow-glass">
                   <div className="flex items-center justify-between border-b border-border/40 pb-4 mb-5">
                     <div className="flex items-center gap-2">
                       <Globe className="h-5 w-5 text-primary" />
-                      <h3 className="font-bold text-base text-foreground">International Wire (Non-Africa)</h3>
+                      <h3 className="font-bold text-base text-foreground">International Wire Transfer</h3>
                     </div>
                     <span className="rounded-full bg-green-500/10 px-2.5 py-0.5 text-[10px] font-bold text-green-400 font-mono">
                       0% FX SPREAD
@@ -1006,10 +1013,10 @@ export function DashboardPage() {
                   )}
 
                   <form onSubmit={handleIntlTransfer} className="space-y-4 text-xs">
-                    {/* Destination Country Selection - STRICTLY NON-AFRICAN */}
+                    {/* Destination Country Selection */}
                     <div>
                       <label className="block font-semibold text-foreground mb-1">
-                        Destination Country * (Eligible Non-African Corridors)
+                        Destination Country * (Supported Global Corridors)
                       </label>
                       <select
                         value={intlForm.country}
@@ -1046,7 +1053,7 @@ export function DashboardPage() {
                       </div>
 
                       <div>
-                        <label className="block font-semibold text-foreground mb-1">Bank Name *</label>
+                        <label className="block font-semibold text-foreground mb-1">Recipient Bank Name *</label>
                         <input
                           type="text"
                           required
@@ -1056,6 +1063,18 @@ export function DashboardPage() {
                           className="w-full rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 text-foreground focus:border-primary focus:outline-none"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block font-semibold text-foreground mb-1">Recipient Bank Address *</label>
+                      <input
+                        type="text"
+                        required
+                        value={intlForm.bankAddress}
+                        onChange={(e) => setIntlForm({ ...intlForm, bankAddress: e.target.value })}
+                        placeholder="e.g. Route des Acacias 60, 1211 Geneva 73, Switzerland"
+                        className="w-full rounded-2xl border border-border/60 bg-background/70 px-4 py-2.5 text-foreground focus:border-primary focus:outline-none"
+                      />
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -1673,7 +1692,7 @@ export function DashboardPage() {
 
               {/* Profile Card Header */}
               <div className="glass rounded-[2.5rem] p-6 sm:p-8 border border-white/25 shadow-glass flex flex-col sm:flex-row items-center gap-6">
-                <div className="relative">
+                <div className="relative group">
                   {user.profilePic ? (
                     <img
                       src={user.profilePic}
@@ -1685,6 +1704,21 @@ export function DashboardPage() {
                       {user.firstName.charAt(0)}
                     </div>
                   )}
+
+                  {/* Photo Edit Overlay Button */}
+                  <label
+                    className="absolute inset-0 flex flex-col items-center justify-center rounded-full bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border-2 border-primary text-white text-[10px] font-bold"
+                    title="Click to change profile picture"
+                  >
+                    <Camera className="h-6 w-6 mb-1 text-primary animate-pulse" />
+                    <span>Change Photo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoUpload}
+                    />
+                  </label>
                 </div>
 
                 <div className="flex-1 text-center sm:text-left">
@@ -1704,6 +1738,38 @@ export function DashboardPage() {
                   <p className="text-xs font-mono text-muted-foreground mt-2">
                     Account: {maskString(user.accountNumber, 4)} • Type: {user.accountType}
                   </p>
+
+                  {/* Photo Management Actions */}
+                  <div className="mt-3 flex items-center gap-2 justify-center sm:justify-start">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition-all cursor-pointer"
+                    >
+                      <Camera className="h-3.5 w-3.5" />
+                      <span>Upload New Photo</span>
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoUpload}
+                    />
+                    {user.profilePic && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateProfile({ profilePic: "" });
+                          setProfileForm((prev) => ({ ...prev, profilePic: "" }));
+                          toast.success("Profile photo removed");
+                        }}
+                        className="rounded-xl border border-white/10 px-2.5 py-1.5 text-[11px] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                      >
+                        Remove Photo
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1717,6 +1783,7 @@ export function DashboardPage() {
                       if (isEditingProfile) {
                         updateProfile(profileForm);
                         setProfileSavedMsg("Verified profile changes saved successfully.");
+                        toast.success("Profile changes saved successfully!");
                         setTimeout(() => setProfileSavedMsg(""), 3000);
                       }
                       setIsEditingProfile(!isEditingProfile);
@@ -1728,6 +1795,28 @@ export function DashboardPage() {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2 text-xs">
+                  <div>
+                    <label className="text-muted-foreground font-semibold block mb-1">First Name</label>
+                    <input
+                      type="text"
+                      disabled={!isEditingProfile}
+                      value={profileForm.firstName}
+                      onChange={(e) => setProfileForm({ ...profileForm, firstName: e.target.value })}
+                      className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-2.5 text-foreground disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-muted-foreground font-semibold block mb-1">Last Name</label>
+                    <input
+                      type="text"
+                      disabled={!isEditingProfile}
+                      value={profileForm.lastName}
+                      onChange={(e) => setProfileForm({ ...profileForm, lastName: e.target.value })}
+                      className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-2.5 text-foreground disabled:opacity-60"
+                    />
+                  </div>
+
                   <div>
                     <label className="text-muted-foreground font-semibold block mb-1">Email Address</label>
                     <input
@@ -1770,6 +1859,30 @@ export function DashboardPage() {
                       onChange={(e) => setProfileForm({ ...profileForm, occupation: e.target.value })}
                       className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-2.5 text-foreground disabled:opacity-60"
                     />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="text-muted-foreground font-semibold block mb-1">Profile Picture URL (or upload above)</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        disabled={!isEditingProfile}
+                        value={profileForm.profilePic || ""}
+                        onChange={(e) => setProfileForm({ ...profileForm, profilePic: e.target.value })}
+                        placeholder="https://... direct image link or data URL"
+                        className="flex-1 rounded-2xl border border-border/60 bg-background/80 px-4 py-2.5 text-foreground disabled:opacity-60"
+                      />
+                      {isEditingProfile && (
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center gap-1.5 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-2.5 font-semibold text-primary hover:bg-primary/20 transition-all"
+                        >
+                          <Upload className="h-4 w-4" />
+                          <span>Browse</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

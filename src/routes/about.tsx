@@ -89,7 +89,7 @@ export function AboutPage() {
     {
       year: "2024",
       title: "Expansion to 21 Financial Hubs",
-      desc: "Licensed clearing across 21 premier jurisdictions spanning Europe, Americas, APAC, and Middle East (excluding Africa).",
+      desc: "Licensed clearing across 21 premier jurisdictions spanning Europe, Americas, APAC, and Middle East.",
     },
     {
       year: "2025",
