@@ -712,7 +712,7 @@ function CustomersPage() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-zinc-300 mb-1">Initial Savings Balance ($)</label>
+                  <label className="block font-semibold text-zinc-300 mb-1">Initial High-Yield Vault ($ — 5.15% APY)</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1093,7 +1093,7 @@ function CustomersPage() {
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
                   >
-                    Checking Account
+                    Current Checking
                   </button>
                   <button
                     type="button"
@@ -1104,7 +1104,7 @@ function CustomersPage() {
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
                   >
-                    Savings Account
+                    High-Yield Vault (5.15% APY)
                   </button>
                 </div>
               </div>

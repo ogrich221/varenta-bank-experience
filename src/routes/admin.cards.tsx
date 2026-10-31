@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { adminHead, money, useRows } from "@/lib/admin";
 import { Loading, PageHeader, Select, Status } from "@/components/admin/ui";
 import { useBanking } from "@/lib/banking-context";
@@ -10,7 +11,7 @@ type C = { id: string; last4: string; brand: string; card_type: string; status: 
 
 function Cards() {
   const { data, isLoading } = useRows("cards", "*, customers(full_name)");
-  const { managedUsers, adminUpdateUserProfile } = useBanking();
+  const { managedUsers, adminToggleUserCardFreeze } = useBanking();
   const [status, setStatus] = useState("all");
 
   const combinedRows = useMemo(() => {
@@ -67,7 +68,22 @@ function Cards() {
               </div>
               <div className="mt-4 flex items-center justify-between gap-2">
                 <span className="text-xs text-zinc-400">Daily Limit: <strong className="text-white">{money(c.spend_limit)}</strong></span>
-                <Status value={c.status} />
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      adminToggleUserCardFreeze(c.id);
+                      toast.success(c.status === "active" ? "Card frozen successfully" : "Card unfrozen and activated");
+                    }}
+                    className={`rounded-xl px-2.5 py-1 text-xs font-semibold border transition-all ${
+                      c.status === "active"
+                        ? "border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20"
+                        : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                    }`}
+                  >
+                    {c.status === "active" ? "Freeze Card" : "Unfreeze Card"}
+                  </button>
+                  <Status value={c.status} />
+                </div>
               </div>
             </article>
           ))}

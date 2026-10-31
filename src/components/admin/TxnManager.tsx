@@ -64,8 +64,18 @@ export function TxnManager({ type }: { type?: "deposit" | "withdrawal" | "transf
       else if (ct.status === "Failed" || ct.status === "Reversed") mappedStatus = "rejected";
 
       let mappedType = ct.type.toLowerCase();
-      if (mappedType === "domestic transfer" || mappedType === "international transfer") {
+      if (
+        mappedType === "domestic transfer" ||
+        mappedType === "international transfer" ||
+        mappedType === "international wire" ||
+        mappedType.includes("transfer") ||
+        mappedType.includes("wire")
+      ) {
         mappedType = "transfer";
+      } else if (mappedType === "deposit" || mappedType === "admin credit") {
+        mappedType = "deposit";
+      } else if (mappedType === "admin debit" || mappedType === "bill payment" || mappedType === "card spend") {
+        mappedType = "withdrawal";
       }
 
       list.push({
@@ -75,9 +85,9 @@ export function TxnManager({ type }: { type?: "deposit" | "withdrawal" | "transf
         amount: ct.amount,
         status: mappedStatus,
         counterparty: ct.recipientOrSender,
-        description: ct.description,
+        description: ct.recipientBank ? `${ct.description} • Bank: ${ct.recipientBank}` : ct.description,
         created_at: ct.date,
-        customers: { full_name: ct.recipientOrSender || "Client Account" },
+        customers: { full_name: ct.userName || ct.recipientOrSender || "Client Account" },
       });
     }
 

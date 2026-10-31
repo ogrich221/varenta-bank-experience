@@ -385,6 +385,26 @@ function AdminCommandCenter() {
         </div>
       </div>
 
+      {/* Institutional Solvency & Global Jurisdictions Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 rounded-2xl border border-white/10 bg-black/60 p-4 backdrop-blur-xl text-xs font-mono">
+        <div className="flex items-center gap-2 text-zinc-300">
+          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>100% Full-Reserve Tier-1 Custody</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-300">
+          <span className="h-2 w-2 rounded-full bg-orange-400" />
+          <span>$18.4B+ Institutional Liquidity</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-300">
+          <span className="h-2 w-2 rounded-full bg-primary" />
+          <span>21 Operating Clearing Hubs</span>
+        </div>
+        <div className="flex items-center gap-2 text-zinc-300">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <span>FDIC Swept ($2.5M / Client)</span>
+        </div>
+      </div>
+
       {/* Main Grid: Credit/Debit Terminal on Left, Transaction Approvals on Right */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
         {/* Left Column: Credit & Debit Terminal */}
@@ -478,7 +498,7 @@ function AdminCommandCenter() {
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
                   >
-                    Checking Account
+                    Current Checking
                   </button>
                   <button
                     type="button"
@@ -489,7 +509,7 @@ function AdminCommandCenter() {
                         : "bg-white/5 border-white/10 text-zinc-400"
                     }`}
                   >
-                    Savings Account
+                    High-Yield Vault (5.15% APY)
                   </button>
                 </div>
               </div>
@@ -702,6 +722,11 @@ function AdminCommandCenter() {
                             Recipient / Counterparty:{" "}
                             <span className="text-zinc-200">{t.recipientOrSender}</span>
                           </p>
+                          {t.recipientBank && (
+                            <p className="text-xs text-orange-400 font-mono">
+                              Bank: {t.recipientBank}
+                            </p>
+                          )}
                           <p className="text-[10px] text-zinc-500">
                             Logged Date: {new Date(t.date).toLocaleString()}
                           </p>
@@ -1076,7 +1101,7 @@ function AdminCommandCenter() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-zinc-300 mb-1">Initial Savings Balance ($)</label>
+                  <label className="block font-semibold text-zinc-300 mb-1">Initial High-Yield Vault ($ — 5.15% APY)</label>
                   <input
                     type="number"
                     step="0.01"

@@ -174,7 +174,12 @@ function TransactionsApprovalPage() {
                       </td>
 
                       <td className="py-3.5 px-4 text-zinc-300">
-                        {t.recipientOrSender}
+                        <span className="block font-medium text-white">{t.recipientOrSender}</span>
+                        {t.recipientBank && (
+                          <span className="block text-[11px] text-orange-400 font-mono mt-0.5">
+                            Bank: {t.recipientBank}
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-3.5 px-4 font-bold font-display text-white text-sm">

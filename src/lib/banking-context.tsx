@@ -98,6 +98,7 @@ interface BankingContextType {
   // Admin Transaction Approvals & Declines
   adminApproveTransaction: (txnId: string) => void;
   adminDeclineTransaction: (txnId: string, reason?: string) => void;
+  adminToggleUserCardFreeze: (userId: string) => void;
 
   // User Actions
   updateProfile: (updated: Partial<UserProfile>) => void;
@@ -806,6 +807,16 @@ export function BankingProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const adminToggleUserCardFreeze = (userId: string) => {
+    setManagedUsers((prev) =>
+      prev.map((u) =>
+        u.id === userId
+          ? { ...u, card: { ...u.card, isFrozen: !u.card.isFrozen } }
+          : u
+      )
+    );
+  };
+
   const updateCardLimit = (newLimit: number) => {
     setManagedUsers((prev) =>
       prev.map((u) =>
@@ -1148,6 +1159,7 @@ export function BankingProvider({ children }: { children: ReactNode }) {
         adminDebitUser,
         adminApproveTransaction,
         adminDeclineTransaction,
+        adminToggleUserCardFreeze,
         updateProfile,
         toggleCardFreeze,
         updateCardLimit,
