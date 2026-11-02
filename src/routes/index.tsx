@@ -17,7 +17,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Varenta Bank — Private Wealth & Global Digital Banking" },
-      { name: "description", content: "Experience 5.15% APY high-yield savings, zero-markup borderless clearing across 21 nations, World Elite metal cards, and 100% full-reserve security." },
+      { name: "description", content: "Secure everyday banking, instant transfers across 21 countries, premium debit cards and real human support, all in one glass-clear account." },
       { property: "og:title", content: "Varenta Bank — Modern Digital Banking" },
       { property: "og:description", content: "High-yield savings, instant international clearing, and institutional safety for private clients and global enterprises." },
     ],
@@ -30,16 +30,10 @@ const txns = [
   { n: "Vanguard Total Stock Dividend", a: "+$1,420.50", in: true, tag: "Dividend" },
   { n: "Nordic Aviation Charter", a: "-$4,800.00", in: false, tag: "Wire" },
   { n: "Apple Flagship — Titanium Card", a: "-$1,199.00", in: false, tag: "Point of Sale" },
-  { n: "Treasury APY Yield Credited", a: "+$432.18", in: true, tag: "Interest 5.15%" },
+  { n: "Salary — Horizon Technologies", a: "+$6,250.00", in: true, tag: "Direct Deposit" },
 ];
 
 const comparisonData = [
-  {
-    feature: "High-Yield Savings (APY)",
-    varenta: "5.15% APY (Daily Compounded)",
-    traditional: "0.01% - 0.05% APY",
-    advantage: "Over 10x National Average",
-  },
   {
     feature: "International Wire Speed",
     varenta: "T+0 Real-Time (Under 15 Seconds)",
@@ -115,7 +109,7 @@ const reviews = [
   {
     n: "Elena Rostova",
     r: "Founder & CEO, Horizon Technologies (London / NY)",
-    q: "Most institutions treat international clients like an afterthought with endless compliance delays. Varenta provisioned our multi-currency accounts and issued our titanium cards within hours. The 5.15% APY yields are extraordinary.",
+    q: "Most institutions treat international clients like an afterthought with endless compliance delays. Varenta provisioned our multi-currency accounts and issued our titanium cards within hours. Everything just works.",
     volume: "Verified Enterprise Client • $1.8M Managed",
   },
   {
@@ -155,63 +149,113 @@ function Index() {
   return (
     <PageShell>
       {/* 1. HERO SECTION */}
-      <section className="relative isolate min-h-[100svh] overflow-hidden" aria-labelledby="hero-title">
+      <section className="relative isolate overflow-hidden" aria-labelledby="hero-title">
         <img
           src={hero}
-          alt="Varenta Bank headquarters, an ultra-modern glass architectural marvel reflecting sunset"
+          alt="Varenta Bank headquarters, an ultra-modern glass tower at dusk"
           width={1920}
           height={1088}
           className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-hero max-lg:bg-background/85" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/30 max-lg:via-background/90 max-lg:to-background/80" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-background to-transparent" />
+        <div className="pointer-events-none absolute -left-32 top-24 -z-10 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-[120px]" />
 
-        <div className="mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-center px-6 pb-20 pt-32 sm:pt-36">
-          <div className="max-w-2xl animate-rise">
-            {/* Live Trust Banner Badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary backdrop-blur-xl shadow-sm">
+        <div className="mx-auto grid min-h-[92svh] max-w-7xl items-center gap-12 px-5 pb-16 pt-28 sm:px-6 sm:pt-32 lg:grid-cols-12 lg:gap-10">
+          <div className="animate-rise lg:col-span-6">
+            <div className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-foreground">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              <span>5.15% APY High-Yield Vault • 21 Licensed Operating Hubs</span>
+              Licensed in 21 countries · Open 24/7
             </div>
 
-            <h1 id="hero-title" className="mt-6 text-4xl font-extrabold tracking-tight leading-[1.08] sm:text-6xl lg:text-7xl">
-              Private Wealth & <span className="text-gradient">Global Banking</span> Built for You
+            <h1 id="hero-title" className="mt-6 text-[2.6rem] font-extrabold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
+              Banking that feels
+              <span className="block text-gradient">clear as glass.</span>
             </h1>
 
-            <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Open an institutional-grade bank account in 5 minutes. Grow capital with <strong className="text-foreground">5.15% APY</strong>, execute instantaneous zero-markup multi-currency wires, and spend globally with dynamic 360° rotating titanium debit cards.
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              One secure account for saving, sending and spending worldwide. Open it in minutes, see every dollar in real time, and talk to a real banker whenever you need one.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <Link to="/open-account" className={`${btnPrimary} text-sm py-3.5 px-6 shadow-glow`}>
-                <span>Open an Account</span>
-                <ArrowRight className="h-4 w-4" />
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link to="/open-account" className={`${btnPrimary} px-7 py-3.5 text-sm shadow-glow`}>
+                Open an Account <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/services" className={`${btnGlass} text-sm py-3.5 px-6`}>
-                <span>Explore All Services</span>
+              <Link to="/login" className={`${btnGlass} px-7 py-3.5 text-sm`}>
+                Sign in to Online Banking
               </Link>
             </div>
 
-            {/* Key Proof Metrics */}
-            <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-border/40 pt-8">
-              <div>
-                <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Capital Secured</dt>
-                <dd className="mt-1 font-display text-2xl sm:text-3xl font-bold text-foreground">$18.4B+</dd>
-                <dd className="text-[10px] text-green-400 font-semibold mt-0.5">100% Full-Reserve</dd>
+            <ul className="mt-10 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                [ShieldCheck, "Deposits insured", "Bank-grade protection"],
+                [Zap, "Instant transfers", "Send in seconds"],
+                [Headphones, "Human support", "Day and night"],
+              ].map(([I, t, d]) => {
+                const Icon = I as typeof ShieldCheck;
+                return (
+                  <li key={t as string} className="glass flex items-center gap-3 rounded-2xl px-4 py-3">
+                    <Icon className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+                    <span>
+                      <span className="block text-sm font-semibold">{t as string}</span>
+                      <span className="block text-[11px] text-muted-foreground">{d as string}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Glass card stack */}
+          <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none" aria-hidden>
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] sm:aspect-square">
+              <div className="absolute inset-6 rounded-[2.5rem] bg-gradient-primary opacity-40 blur-3xl" />
+
+              {/* Main glass account panel */}
+              <div className="glass absolute inset-x-0 top-6 rounded-[2rem] p-6 sm:p-7">
+                <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/25 via-transparent to-transparent" />
+                <div className="relative flex items-center justify-between">
+                  <span className="flex items-center gap-2 text-sm font-semibold">
+                    <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-primary text-primary-foreground"><Landmark className="h-4 w-4" /></span>
+                    Varenta Current
+                  </span>
+                  <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold text-primary">ACTIVE</span>
+                </div>
+                <p className="relative mt-6 text-xs uppercase tracking-widest text-muted-foreground">Available balance</p>
+                <p className="relative mt-1 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">$0.00</p>
+                <div className="relative mt-6 grid grid-cols-4 gap-2">
+                  {[[Send, "Send"], [Plus, "Add"], [Receipt, "Pay"], [CreditCard, "Card"]].map(([I, l]) => {
+                    const Icon = I as typeof Send;
+                    return (
+                      <span key={l as string} className="flex flex-col items-center gap-1.5 rounded-2xl border border-white/15 bg-white/10 py-3 text-[11px] font-semibold">
+                        <Icon className="h-4 w-4 text-primary" />{l as string}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
-              <div>
-                <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">High-Yield APY</dt>
-                <dd className="mt-1 font-display text-2xl sm:text-3xl font-bold text-primary">5.15%</dd>
-                <dd className="text-[10px] text-muted-foreground mt-0.5">Daily Compounded</dd>
+
+              {/* Floating card */}
+              <div className="absolute -bottom-2 -left-4 w-[68%] rotate-[-8deg] animate-float rounded-[1.4rem] bg-gradient-to-br from-ink via-ink to-primary/70 p-5 text-cream shadow-glow ring-1 ring-white/15 sm:-left-8">
+                <div className="flex items-center justify-between text-[10px] font-semibold tracking-widest opacity-80">
+                  <span>VARENTA</span><span>DEBIT</span>
+                </div>
+                <div className="mt-6 h-7 w-9 rounded-md bg-gradient-to-br from-primary-glow to-primary" />
+                <p className="mt-4 font-mono text-sm tracking-[0.2em]">•••• 2026</p>
               </div>
-              <div>
-                <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Client Rating</dt>
-                <dd className="mt-1 font-display text-2xl sm:text-3xl font-bold text-foreground">4.9 / 5.0</dd>
-                <dd className="text-[10px] text-muted-foreground mt-0.5">Over 2,000,000+ Clients</dd>
+
+              {/* Floating notification */}
+              <div className="glass absolute -right-2 bottom-10 flex items-center gap-3 rounded-2xl px-4 py-3 sm:-right-6">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/15 text-primary"><ShieldCheck className="h-4 w-4" /></span>
+                <span>
+                  <span className="block text-xs font-bold">Sign-in verified</span>
+                  <span className="block text-[10px] text-muted-foreground">Face ID · just now</span>
+                </span>
               </div>
-            </dl>
+            </div>
           </div>
         </div>
       </section>
@@ -272,7 +316,7 @@ function Index() {
                   <span className="rounded-full bg-black/20 px-3 py-1 text-xs font-bold font-mono">WORLD ELITE</span>
                 </div>
                 <p className="mt-4 font-display text-4xl font-extrabold sm:text-6xl tracking-tight">$142,850.00</p>
-                <p className="text-xs opacity-80 mt-1">Available across checking & high-yield vault</p>
+                <p className="text-xs opacity-80 mt-1">Available across checking & savings vault</p>
               </div>
 
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -282,12 +326,12 @@ function Index() {
                   <p className="text-[10px] text-green-300 mt-1 font-mono">● Immediate Liquid</p>
                 </div>
                 <div className="rounded-2xl bg-black/20 p-4 backdrop-blur-md">
-                  <p className="text-xs opacity-75">High-Yield Vault</p>
+                  <p className="text-xs opacity-75">Savings Vault</p>
                   <p className="mt-1 font-display text-xl font-bold">$100,500.00</p>
-                  <p className="text-[10px] text-amber-200 mt-1 font-mono">5.15% APY Daily</p>
+                  <p className="text-[10px] text-amber-200 mt-1 font-mono">Protected savings</p>
                 </div>
                 <div className="rounded-2xl bg-black/20 p-4 backdrop-blur-md">
-                  <p className="text-xs opacity-75">Monthly Accrued Yield</p>
+                  <p className="text-xs opacity-75">Pending Deposits</p>
                   <p className="mt-1 font-display text-xl font-bold text-green-300">+$432.18</p>
                   <p className="text-[10px] opacity-75 mt-1 font-mono">Credited 1st of month</p>
                 </div>
@@ -392,12 +436,12 @@ function Index() {
                     <PiggyBank className="h-6 w-6" aria-hidden />
                   </span>
                   <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-bold text-primary font-mono">
-                    5.15% APY
+                    FLEXIBLE
                   </span>
                 </div>
-                <h3 className="mt-6 text-xl font-bold">High-Yield Treasury & Savings</h3>
+                <h3 className="mt-6 text-xl font-bold">Smart Savings Vaults</h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Earn more than 10x the national bank average with zero account minimums, daily compounded interest, and unlimited transfers.
+                  Set savings goals, automate deposits and access your money any time with no minimums and unlimited transfers.
                 </p>
                 <ul className="mt-5 space-y-2.5 text-xs text-foreground/80">
                   <li className="flex items-center gap-2">
@@ -415,7 +459,7 @@ function Index() {
                 </ul>
               </div>
               <div className="mt-6 pt-5 border-t border-border/50 flex items-center justify-between">
-                <span className="text-xs font-mono text-muted-foreground">Traditional: 0.05%</span>
+                <span className="text-xs font-mono text-muted-foreground">No minimum balance</span>
                 <Link to="/services" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
                   Learn more <ArrowRight className="h-3 w-3" />
                 </Link>
@@ -921,7 +965,7 @@ function Index() {
               Ready to Experience the <span className="text-gradient">Future of Banking?</span>
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Join over 2,000,000 individuals and global corporations banking with 5.15% APY yield, zero wire markups, and institutional peace of mind.
+              Join over 2,000,000 individuals and global corporations banking with zero wire markups, and institutional peace of mind.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <Link to="/open-account" className={`${btnPrimary} py-3.5 px-8 text-sm w-full sm:w-auto shadow-glow`}>
