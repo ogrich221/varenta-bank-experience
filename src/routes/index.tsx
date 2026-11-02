@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
       { title: "Varenta Bank — Private Wealth & Global Digital Banking" },
       { name: "description", content: "Secure everyday banking, instant transfers across 21 countries, premium debit cards and real human support, all in one glass-clear account." },
       { property: "og:title", content: "Varenta Bank — Modern Digital Banking" },
-      { property: "og:description", content: "High-yield savings, instant international clearing, and institutional safety for private clients and global enterprises." },
+      { property: "og:description", content: "Smart savings, instant international clearing, and institutional safety for private clients and global enterprises." },
     ],
   }),
   component: Index,
@@ -127,7 +127,7 @@ const faqList = [
   },
   {
     q: "How quickly can I open an account and access my funds?",
-    a: "Opening an account takes approximately 3 to 5 minutes through our modern glassmorphic portal. Once verified with standard KYC biometric identity verification, your checking and high-yield savings accounts are immediately active, complete with routing details and a virtual World Elite debit card ready for Apple Pay and Google Wallet.",
+    a: "Opening an account takes approximately 3 to 5 minutes through our modern glassmorphic portal. Once verified with standard KYC biometric identity verification, your checking and savings accounts are immediately active, complete with routing details and a virtual World Elite debit card ready for Apple Pay and Google Wallet.",
   },
   {
     q: "Are there any hidden international transfer fees or currency markups?",
