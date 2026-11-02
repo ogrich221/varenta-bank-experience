@@ -137,7 +137,7 @@ function CustomersPage() {
         profilePic: createForm.profilePic.trim(),
       });
 
-      toast.success(`Client ${newUser.profile.firstName} ${newUser.profile.lastName} created! Account #${newUser.accounts[0].accountNumber}`);
+      toast.success(`Client ${newUser.profile.firstName} ${newUser.profile.lastName} created! Account #${newUser.accounts[0]?.accountNumber ?? ""}`);
       setCreateModalOpen(false);
 
       // Reset form
@@ -340,7 +340,7 @@ function CustomersPage() {
             value={filterQuery}
             onChange={(e) => {
               setFilterQuery(e.target.value);
-              navigate({ search: e.target.value ? { q: e.target.value } : {}, replace: true });
+              navigate({ to: "/admin/customers", search: e.target.value ? { q: e.target.value } : {}, replace: true });
             }}
             placeholder="Search by name, email, phone, account number..."
             className="w-full rounded-xl border border-white/10 bg-white/5 pl-9 pr-3 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-orange-500"

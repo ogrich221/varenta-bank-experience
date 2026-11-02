@@ -156,7 +156,7 @@ function AdminCommandCenter() {
         profilePic: createForm.profilePic.trim(),
       });
 
-      toast.success(`Client ${newUser.profile.firstName} ${newUser.profile.lastName} created! Account #${newUser.accounts[0].accountNumber}`);
+      toast.success(`Client ${newUser.profile.firstName} ${newUser.profile.lastName} created! Account #${newUser.accounts[0]?.accountNumber ?? ""}`);
       setSelectedUserId(newUser.id);
       setCreateModalOpen(false);
 
