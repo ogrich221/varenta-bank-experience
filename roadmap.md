@@ -18,3 +18,4 @@
 
 - Console figures come from the sample book already in the database: 24 customers, 39 accounts, 160 transactions.
 - The preview server had to be restarted once: it was still handing the browser an out-of-date page list, so the new console pages 404'd in the preview.
+- [x] Rewrite hero headline to sophisticated, top-tier tone

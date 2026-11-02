@@ -168,16 +168,16 @@ function Index() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              Licensed in 21 countries · Open 24/7
+              Est. private institution · 21 financial capitals
             </div>
 
             <h1 id="hero-title" className="mt-6 text-[2.6rem] font-extrabold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
-              Banking that feels
-              <span className="block text-gradient">clear as glass.</span>
+              Private banking,
+              <span className="block text-gradient">without borders.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              One secure account for saving, sending and spending worldwide. Open it in minutes, see every dollar in real time, and talk to a real banker whenever you need one.
+              Discreet, uncompromising stewardship of your wealth across 21 financial capitals. Bespoke accounts, a dedicated private banker, and the security of an institution built to endure for generations.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -210,7 +210,7 @@ function Index() {
           </div>
 
           {/* Glass card stack */}
-          <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none" aria-hidden>
+          <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none lg:mt-56 lg:scale-90 lg:origin-bottom-right" aria-hidden>
             <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] sm:aspect-square">
               <div className="absolute inset-6 rounded-[2.5rem] bg-gradient-primary opacity-40 blur-3xl" />
 
