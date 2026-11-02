@@ -155,9 +155,9 @@ function Index() {
           alt="Varenta Bank headquarters, an ultra-modern glass tower at dusk"
           width={1920}
           height={1088}
-          className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-[75%_center]"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/30 max-lg:via-background/90 max-lg:to-background/80" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background/95 via-background/55 to-transparent max-lg:from-background/80 max-lg:via-background/70 max-lg:to-background/50" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-background to-transparent" />
         <div className="pointer-events-none absolute -left-32 top-24 -z-10 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-[120px]" />
 
