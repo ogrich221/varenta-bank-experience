@@ -160,6 +160,8 @@
     border-color: var(--color-border);
   }
 
+  html, body { overflow-x: clip; max-width: 100%; }
+  img, video, svg, canvas { max-width: 100%; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
