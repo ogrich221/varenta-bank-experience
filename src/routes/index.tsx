@@ -155,9 +155,9 @@ function Index() {
           alt="Varenta Bank headquarters, an ultra-modern glass tower at dusk"
           width={1920}
           height={1088}
-          className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]"
+          className="absolute inset-0 -z-20 h-full w-full object-cover object-[75%_center]"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/30 max-lg:via-background/90 max-lg:to-background/80" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background/95 via-background/55 to-transparent max-lg:from-background/80 max-lg:via-background/70 max-lg:to-background/50" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-background to-transparent" />
         <div className="pointer-events-none absolute -left-32 top-24 -z-10 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-[120px]" />
 
@@ -168,16 +168,16 @@ function Index() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
-              Licensed in 21 countries · Open 24/7
+              Est. private institution · 21 financial capitals
             </div>
 
             <h1 id="hero-title" className="mt-6 text-[2.6rem] font-extrabold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl">
-              Banking that feels
-              <span className="block text-gradient">clear as glass.</span>
+              Private banking,
+              <span className="block text-gradient">without borders.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              One secure account for saving, sending and spending worldwide. Open it in minutes, see every dollar in real time, and talk to a real banker whenever you need one.
+              Discreet, uncompromising stewardship of your wealth across 21 financial capitals. Bespoke accounts, a dedicated private banker, and the security of an institution built to endure for generations.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -210,7 +210,7 @@ function Index() {
           </div>
 
           {/* Glass card stack */}
-          <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none" aria-hidden>
+          <div className="relative mx-auto w-full max-w-md lg:col-span-6 lg:max-w-none lg:mt-56 lg:scale-90 lg:origin-bottom-right" aria-hidden>
             <div className="relative mx-auto aspect-[4/5] w-full max-w-[26rem] sm:aspect-square">
               <div className="absolute inset-6 rounded-[2.5rem] bg-gradient-primary opacity-40 blur-3xl" />
 
